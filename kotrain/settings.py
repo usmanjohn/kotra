@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'podcasts',
     'crispy_forms',
     'crispy_bootstrap4',
-    'media',
+    
     'taggit',
     'django_ckeditor_5'
 ]
