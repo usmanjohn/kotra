@@ -1,0 +1,19 @@
+{% extends 'topics/base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+    <form action="" method = "POST">
+        {% csrf_token %}
+        {{form|crispy}}
+
+        <input type="submit" name = 'submit'> Login
+    </form>
+    
+    <p>
+        <div><small><a href="">Forgot username or password?</a>
+        </div>
+        </small> <a href="{% url 'register' %}">Create account</a></p>
+
+
+    {% endblock content %}

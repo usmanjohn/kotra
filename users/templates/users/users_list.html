@@ -1,0 +1,82 @@
+{% extends 'topics/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="container mt-4">
+    
+    <ul class="list-group list-group-horizontal-lg">
+        <h5 class="mb-4" style="margin-right: 4px;">User Profiles</h5>
+        
+        <a href=""><span class="badge bg-light"><li class="list-group-item">Search</li></span></a>
+        <a href=""><span class="badge bg-light"><li class="list-group-item">Sort</li></span></a>
+        <a href=""><span class="badge bg-light"><li class="list-group-item">Role</li></span></a>
+    </ul>
+    <div class="row">
+        {% for obj in object_list %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <span class="btn btn-info mt-auto">{{ obj.userprofile.badge_status }}</span>
+                <div class="card-body text-center">
+
+                    <img src="{{ obj.userprofile.image.url }}" alt="{{ obj.username }}'s profile picture" 
+                         class="img-fluid rounded-circle mb-3" 
+                         style="width: 100px; height: 100px;">
+                         
+                    <h5 class="card-title">{{ obj.username }}</h5>
+                    <p class="card-text">{{ obj.email }}</p>
+                    <p class="card-text text-truncate" style="max-height: 3em; overflow: hidden;">{{ obj.userprofile.bio }}</p>
+                    <a href="{% url 'profile' obj.username %}" class="btn btn-primary mt-auto">View Profile</a>
+                    <span class="btn btn-success mt-auto">{{ obj.userprofile.total_gains }}</span>
+                    
+                    
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div> 
+</div>
+{% for contact in page_obj %}
+    {# Each "contact" is a Contact model object. #}
+    {{ contact.full_name|upper }}<br>
+    ...
+{% endfor %}
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                    <span class="sr-only">First</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </a>
+            </li>
+        {% endif %}
+        
+        <li class="page-item disabled">
+            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        </li>
+        
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                    <span class="sr-only">Last</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+
+{% endblock content %}

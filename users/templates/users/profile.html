@@ -1,0 +1,33 @@
+{% extends 'topics/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <img src="{{ profile_user.userprofile.image.url }}" 
+                 alt="{{ profile_user.username }}'s profile picture" 
+                 class="img-fluid rounded-circle mb-3" 
+                 style="width: 150px; height: 150px;">
+            <h2>{{ profile_user.username }}</h2>
+            <p>{{ profile_user.email }}</p>
+            <p>{{ profile_user.userprofile.bio }}</p>
+        </div>
+        <div class="col-md-8">
+            {% if is_own_profile %}
+            <h2>Update Profile</h2>
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ u_form|crispy }}
+                </div>
+                <div class="mb-3">
+                    {{ p_form|crispy }}
+                </div>
+                <button class="btn btn-primary" type="submit">Update</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

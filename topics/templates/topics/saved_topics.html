@@ -1,0 +1,40 @@
+{% extends 'topics/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="mb-4">Saved Topics</h3>
+    <div class="list-group">
+        {% for saved_topic in saved_topics %}
+            <a href="{% url 'topic-detail' saved_topic.topic.id %}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <div class="left-section">
+                        <h5 class="mb-1">{{ saved_topic.topic.topic_title }}</h5>
+                        <p class="mb-1">{{ saved_topic.topic.topic_body }}</p>
+                        <small class="text-muted">{{ saved_topic.topic.topic_hashtag }}</small>
+                        <p><i class="bi bi-hand-thumbs-up"></i>
+                    <span class="vote-count">{{ saved_topic.upvotes }}</span></p>
+                    </div>
+                    <div class="right-section text-end">
+                        <small class="text-muted">By {{ saved_topic.topic.topic_author }}</small>
+                        <br>
+                        <small class="text-muted">{{ saved_topic.topic.topic_pub_date|timesince }}</small>
+                        <br>
+                        <small class="text-muted">{{ saved_topic.answers }} answers</small>
+                        <br>
+                        
+                    </div>
+                </div>
+            </a>
+
+            
+                
+            
+        
+        {% empty %}
+            <div class="list-group-item">
+                <p class="mb-1">You have no saved topics.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

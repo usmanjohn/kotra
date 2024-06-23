@@ -1,0 +1,69 @@
+{% extends "topics/base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+    .card-header, .card-footer {
+        background-color: #f8f9fa; /* Light grey background for header and footer */
+    }
+    .card-body {
+        background-color: #e9ecef; /* Slightly darker grey for the body */
+    }
+    .card-text, .list-unstyled {
+        height: 100px; /* Fixed height for text and list */
+        overflow: hidden; /* Hide overflow content */
+    }
+    audio {
+        width: 100%; /* Full width audio controls */
+    }
+</style>
+
+<div class="container mt-4">
+    <h4 class="text-center mb-4">Saved Podcasts</h4>
+    <div class="row">
+        {% for podcast in podcasts %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow">
+                <div class="card-header">
+                    <h5 class="card-title">{{ podcast.title }}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ podcast.description|truncatewords:20 }}</p>
+                    <audio controls class="mt-2" id="audio-player-{{ podcast.id }}" preload="none">
+                        <source id="source-{{ podcast.id }}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                    
+                    
+                    
+                    <ul class="list-unstyled mt-3">
+                        <li><strong>Length:</strong> {{ podcast.length }} minutes</li>
+                        <li><strong>Uploader:</strong> {{ podcast.audio_uploader.username }}</li>
+                        <li><strong>Speaker:</strong> {{ podcast.speaker.username }}</li>
+                        <li><a href="{% url 'podcast-detail' podcast.id %}">See more</a></li>
+                      
+                        
+                    </ul>
+                </div>
+                <div class="card-footer text-muted">
+                    <small>Published: {{ podcast.date_published|date:"M d, Y" }}</small>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center">No podcasts available yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<script>
+    function loadAudio(podcastId, audioUrl) {
+        var audioPlayer = document.getElementById('audio-player-' + podcastId);
+        var source = document.getElementById('source-' + podcastId);
+        source.src = audioUrl;
+        audioPlayer.load(); // Load the new source
+        audioPlayer.play(); // Play the audio
+    }
+    </script>
+{% endblock %}

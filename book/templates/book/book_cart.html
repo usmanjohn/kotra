@@ -1,0 +1,50 @@
+{% extends "topics/base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Your Cart</h2>
+    {% if cart_items %}
+        <ul class="list-group mb-4">
+            {% for item in cart_items %}
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <!-- Image container with fixed width and padding -->
+                        <div style="flex: 0 0 100px; padding-right: 20px;">
+                            <img src="{{ item.book.cover_image.url }}" class="img-fluid" alt="{{ item.book.title }} Cover" style="max-width: 100px; height: auto;">
+                        </div>
+
+                        <!-- Details container -->
+                        <div class="flex-grow-1">
+                            <h5>{{ item.book.title }}</h5>
+                            <p>Quantity: {{ item.quantity }}</p>
+                            <small><a href="{% url 'book-detail' item.book.id %}">See details</a></small>
+                            <p>Price: ${{ item.book.prize }}</p>
+                        </div>
+
+                        <!-- Quantity controls -->
+                        <div class="btn-group" role="group" aria-label="Quantity controls">
+                            <form action="{% url 'increase-quantity' item.id %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-sm">+</button>
+                            </form>
+                            <form action="{% url 'decrease-quantity' item.id %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-warning btn-sm">-</button>
+                            </form>
+                            <form action="{% url 'remove-from-cart' item.book.id %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="d-flex justify-content-between align-items-center">
+            <h4>Total Amount: ${{ cart_items.total }}</h4>
+            <a href="{% url 'order' %}" class="btn btn-primary btn-lg">Order Now</a>
+        </div>
+    {% else %}
+        <p>Your cart is empty.</p>
+    {% endif %}
+</div>
+{% endblock content %}

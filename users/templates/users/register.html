@@ -1,0 +1,12 @@
+{% extends 'topics/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <p>We are happy to have you with us together!</p>
+    <form action="" method = "POST">
+        {% csrf_token %}
+        {{form|crispy}}
+
+        <input type="submit" name = 'submit'> Submit
+    </form>
+    {% endblock content %}

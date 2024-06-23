@@ -1,0 +1,367 @@
+{% extends "topics/base.html" %}
+
+{% load static %}
+
+{% block content %}
+<style>
+    
+        .profile-image-container {
+            display: flex;
+            align-items: center; /* Vertically center the content */
+            justify-content: center; /* Horizontally center the content */
+            height: 100%; /* Take full height of the parent */
+        }
+        
+        
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center content vertically in card body */
+        }
+    
+    .profile-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .profile-image {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 3px solid #dee2e6;
+    }
+
+    .profile-info {
+        margin-top: 10px;
+    }
+
+    .nav-pills .nav-link {
+        border-radius: 0.25rem;
+        color: #495057;
+    }
+
+    .nav-pills .nav-link.active {
+        color: #fff;
+        background-color: #007bff;
+    }
+
+    .icon-text {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .icon-text i {
+        font-size: 1.2rem;
+    }
+
+    .content-section {
+        display: none;
+        padding-top: 20px;
+    }
+
+    .content-section.active {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .content-item {
+        flex: 1 1 50%; /* Set basis to 50% so each item takes up half the width of the container */
+        padding: 10px;
+    }
+
+    .card {
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .content-section {
+        display: none;
+    }
+</style>
+
+    
+<div class="container mt-2">
+    <div class="card mb-3">
+        <div class="row g-0">
+            
+            <div class="col-md-5">
+                <div class="profile-image-container">
+                    <img src="{{ profile_user.userprofile.image.url }}" alt="{{ profile_user.username }}'s profile picture" class="profile-image img-fluid">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-body">
+                    <h4>{{ profile_user.username }}</h4>
+                    <p><span class="badge bg-success">Gains: {{ profile_user.userprofile.total_gains }}</span></p>
+                    <p><span class="badge bg-info">Role: {{ profile_user.userprofile.badge_status }}</span></p>
+                    <p>{{ profile_user.email }}</p>
+                    <p>{{ profile_user.userprofile.bio }}</p>
+                    {% if is_own_profile %}
+                        <a href="{% url 'profile-update' profile_user.username %}"><span class="badge bg-secondary bg-gradient">Update Profile</span></a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-body">
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <a href="https://www.instagram.com/yourprofile" target="_blank">
+                                <img src="{% static 'images/instagram.jpg' %}" alt="Instagram" style="width: 60px; height: 60px;">
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="https://www.facebook.com/yourprofile" target="_blank">
+                                <img src="{% static 'images/facebook.jpg' %}" alt="Facebook" style="width: 40px; height: 40px;">
+                            </a>
+                        </li>
+                   
+                        <li class="list-inline-item">
+                            <a href="https://www.twitter.com/yourprofile" target="_blank">
+                                <img src="{% static 'images/twitterr.png' %}" alt="Twitter" style="width: 40px; height: 40px;">
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="https://www.twitter.com/yourprofile" target="_blank">
+                                <img src="{% static 'images/youtuber.png' %}" alt="Twitter" style="width: 40px; height: 40px;">
+                            </a>
+                        </li>
+                        <!-- Add more social media links as needed -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <ul class="nav nav-pills nav-fill mb-4" id="profileTabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-target="#topics"><span class="icon-text"><i class="bi bi-journal-text"></i> Topics</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-target="#answers"><span class="icon-text"><i class="bi bi-chat-left-text"></i> Answers</span></a>
+            
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-target="#books"><span class="icon-text"><i class="bi bi-book"></i> Books</span></a>
+        </li>
+        {% if is_own_profile %}
+            
+        <li class="nav-item">
+            <a class="nav-link" data-target="#saved"><span class="icon-text"><i class="bi bi-bookmark-star"></i> Saved</span></a>
+        </li>
+        {% endif %}
+        
+    </ul>
+
+    <div id="topics" class="content-section">
+        <div class="row">
+        {% for topic in profile_user.topic_auth.all %}
+        
+        <div class="col-md-6 mb-3">
+        
+        
+            <div class="card h-100">
+                <div class="row g-0">
+                    
+                    <div class="col-md-10">
+                     
+                        <div class="card-body">
+                            
+
+                            <h5 class="card-title">
+                                <a href="{% url 'topic-detail' topic.id %}">{{ topic.topic_title }}</a>
+                            </h5> 
+                            <p class="card-text" 
+                            style="max-height: 3em;
+                                    overflow: hidden; 
+                                    display: -webkit-box;
+                                    -webkit-line-clamp: 2; 
+                                    line-clamp: 2; 
+                                    -webkit-box-orient: vertical;">{{ topic.topic_body }}</p>
+                                <p class="card-text"><span class="badge bg-secondary">#{{ topic.topic_hashtag }}</span></p>                           
+                                    <p class="card-text">
+                                
+                                <small class="text-muted">{{ topic.topic_pub_date|timesince }}</small>
+                            </p>
+                            <p class="card-text">
+                                <i class="bi bi-hand-thumbs-up"></i> {{ topic.upvotes }}
+                                
+                            </p>
+                        
+                        </div>
+                    
+                   
+                    </div>
+            
+                </div>
+            </div>
+        
+        </div>
+    
+        {% endfor %}
+    </div>
+    </div>
+    <div id="answers" class="content-section">
+        <div class="row">
+        
+        {% for answer in profile_user.answer_auth.all %}
+        <div class="col-md-6 mb-3">
+            <div class="card h-100">
+                <div class="row g-0">
+                    
+                    <div class="col-md-10">
+                     
+                        <div class="card-body">
+                            
+
+                            <h5 class="card-title">
+                                <a href="{% url 'topic-detail' answer.topic_parent.id %}">{{ answer.topic_parent.topic_title }}</a>
+                            </h5> 
+                            <p class="card-text" 
+                            style="max-height: 3em;
+                                    overflow: hidden; 
+                                    display: -webkit-box;
+                                    -webkit-line-clamp: 2; 
+                                    line-clamp: 2; 
+                                    -webkit-box-orient: vertical;">{{ answer.topic_parent.topic_body }}</p>
+                                <p class="card-text"><span class="badge bg-secondary">#{{ answer.topic_parent.topic_hashtag }}</span></p>                           
+                                    <p class="card-text">
+                                
+                                <small class="text-muted">{{ answer.topic_parent.topic_pub_date|timesince }}</small>
+                            </p>
+                            <p class="card-text">
+                                <i class="bi bi-hand-thumbs-up"></i> {{ topic.upvotes }}
+                                
+                            </p>
+                            <p class = 'fst-italic'>Answer: {{answer.answer_body}}</p>
+                        </div>
+                    
+                   
+                    </div>
+            
+                </div>
+            </div>
+        </div>
+        {% endfor %}<!-- Dynamic Answers Content -->
+    </div>
+
+    </div>
+    
+    <div id="books" class="content-section">
+        <div class="row">
+        {% for book in profile_user.books_uploaded.all %}
+        
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+
+                <img src="{{ book.cover_image.url }}" class="card-img-top img-fluid" style="height: 170px; width: 150px" alt="{{ book.title }} Cover">
+                <div class="uploader-info position-absolute d-flex align-items-center" style="top: 10px; left: 10px;">
+                    <a href="{% url 'profile' book.uploader.username %}">
+                    <img src="{{ book.uploader.userprofile.image.url }}" class="rounded-circle" style="width: 30px; height: 30px; border: 2px solid white;" alt="{{ book.uploader.username }}'s profile picture">
+                    <small class="btn btn-secondary btn-sm">{{ book.uploader.username }}</small></a>
+                </div>
+                <div class="card-body">
+                    
+                    <h5 class="card-title">
+                    <a href="{% url 'book-detail' book.id %}"> {{ book.title }}</a>
+                       </h5>
+                    <p class="card-text text-truncate">{{ book.description }}</p>
+                    <ul class="list-unstyled mb-3">
+                        <li><strong>Author:</strong> {{ book.author }}</li>
+                        <li><strong>Pages:</strong> {{ book.num_of_pages }}</li>
+                        <li><strong>Publication Year:</strong> {{ book.pub_year }}</li>
+                        <li><strong>Category:</strong> {{ book.category }}</li>
+                    </ul>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="text-success font-weight-bold">${{ book.prize }}</h6>
+                        <div class="btn-group">
+
+                            <form action="{% url 'add-to-cart' book.id %}" method="post">
+                                {% csrf_token %}
+                                <small><button type="submit" class="btn btn-primary btn-sm">Add to Cart</button></small>
+                            </form>
+                            
+                            <a href="{% url 'book-detail' book.id %}"><button class="btn btn-secondary btn-sm">View Details</button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% endfor %}
+    </div>
+        <!-- Dynamic Books Content -->
+    </div>
+    {% if is_own_profile %}
+    <div id="saved" class="content-section">
+        <div class="row">
+        {% for saved_topic in saved_topics %}
+            <a href="{% url 'topic-detail' saved_topic.topic.id %}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <div class="left-section">
+                        <h5 class="mb-1">{{ saved_topic.topic.topic_title }}</h5>
+                        <p class="mb-1">{{ saved_topic.topic.topic_body }}</p>
+                        <small class="text-muted">{{ saved_topic.topic.topic_hashtag }}</small>
+                        <p><i class="bi bi-hand-thumbs-up"></i>
+                    <span class="vote-count">{{ saved_topic.upvotes }}</span></p>
+                    </div>
+                    <div class="right-section text-end">
+                        <small class="text-muted">By {{ saved_topic.topic.topic_author }}</small>
+                        <br>
+                        <small class="text-muted">{{ saved_topic.topic.topic_pub_date|timesince }}</small>
+                        <br>
+                        <small class="text-muted">{{ saved_topic.answers }} answers</small>
+                        <br> 
+                        
+                    </div>
+                </div>
+            </a>
+
+            
+                
+            
+        
+        {% empty %}
+            <div class="list-group-item">
+                <p class="mb-1">You have no saved topics.</p>
+            </div>
+        
+        
+        {% endfor %}
+    </div>
+        <!-- Dynamic Books Content -->
+    </div>
+    {% endif %}
+    
+
+    
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var tabs = document.querySelectorAll('#profileTabs a');
+    var sections = document.querySelectorAll('.content-section');
+
+    function showSection(element) {
+        sections.forEach(section => {
+            section.style.display = 'none';
+        });
+        var targetSection = document.querySelector(element.getAttribute('data-target'));
+        if (targetSection) {
+            targetSection.style.display = 'block';
+        }
+    }
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function () {
+            document.querySelector('#profileTabs a.active').classList.remove('active');
+            tab.classList.add('active');
+            showSection(tab);
+        });
+    });
+
+    // Initialize first tab
+    showSection(document.querySelector('#profileTabs a.active'));
+});
+</script>
+{% endblock content %}

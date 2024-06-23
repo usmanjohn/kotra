@@ -1,0 +1,56 @@
+{% extends "topics/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Add New Book Card -->
+        <div class="col-md-3 mb-4">
+            
+            <div class="card h-100 text-center">
+                <a href="{% url 'book-create' %}">
+                    <img src="{% static 'images/add.png' %}" alt="Add a new book" class="card-img-top img-fluid">
+                </a>
+            </div>
+        </div>
+        {% for book in books %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+
+                <img src="{{ book.cover_image.url }}" class="card-img-top img-fluid" style="height: 170px; width: 150px" alt="{{ book.title }} Cover">
+                <div class="uploader-info position-absolute d-flex align-items-center" style="top: 10px; left: 10px;">
+                    <a href="{% url 'profile' book.uploader.username %}">
+                    <img src="{{ book.uploader.userprofile.image.url }}" class="rounded-circle" style="width: 30px; height: 30px; border: 2px solid white;" alt="{{ book.uploader.username }}'s profile picture">
+                    <small class="btn btn-secondary btn-sm">{{ book.uploader.username }}</small></a>
+                </div>
+                <div class="card-body">
+                    
+                    <h5 class="card-title">
+                    <a href="{% url 'book-detail' book.id %}"> {{ book.title }}</a>
+                       </h5>
+                    <p class="card-text text-truncate">{{ book.description }}</p>
+                    <ul class="list-unstyled mb-3">
+                        <li><strong>Author:</strong> {{ book.author }}</li>
+                        <li><strong>Pages:</strong> {{ book.num_of_pages }}</li>
+                        <li><strong>Publication Year:</strong> {{ book.pub_year }}</li>
+                        <li><strong>Category:</strong> {{ book.category }}</li>
+                    </ul>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="text-success font-weight-bold">${{ book.prize }}</h6>
+                        <div class="btn-group">
+
+                            <form action="{% url 'add-to-cart' book.id %}" method="post">
+                                {% csrf_token %}
+                                <small><button type="submit" class="btn btn-primary btn-sm">Add to Cart</button></small>
+                            </form>
+                            
+                            <a href="{% url 'book-detail' book.id %}"><button class="btn btn-secondary btn-sm">View Details</button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

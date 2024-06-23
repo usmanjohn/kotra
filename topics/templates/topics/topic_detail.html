@@ -1,0 +1,117 @@
+{% extends 'topics/base.html' %}
+{% load crispy_forms_tags %}
+{% load custom_filters %}
+
+{% block content %}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+<div class="container mt-4">
+    <div class="row g-0">
+        <div class="col-md-2 text-center my-auto">
+            <a href="{% url 'profile' topic.topic_author.username %}">
+                <img src="{{topic.topic_author.userprofile.image.url}}" 
+                    alt="{{ topic.topic_author.username }}'s profile picture" 
+                    class="img-fluid rounded-circle mx-auto d-block" 
+                    style="width: 70px; height: 70px;">
+            </a>
+            <a href="{% url 'profile' topic.topic_author.username %}">{{ topic.topic_author }}</a>
+        </div>
+        <div class="col-md-7 my-auto">
+            <h3>{{ topic.topic_title }} 
+                {% if is_saved %}
+                    <a href="{% url 'unsave-topic' topic.id %}" >
+                        <i class="bi bi-bookmark-check-fill"></i> 
+                    </a>
+                {% else %}
+                    <a href="{% url 'save-topic' topic.id %}">
+                        <i class="bi bi-bookmark-check"></i>
+                    </a>
+                {% endif %}
+            </h3>
+            <p>{{ topic.topic_body }}</p>
+           
+                
+           
+            <p class="card-text">
+                <span class="badge bg-primary">#{{ topic.topic_hashtag }}</span>
+            </p>
+            {% if own_topic %}
+                <span class="badge"><a class="text-wrap" href="{% url 'topic-update' topic.id %}">Edit</a></span>
+                <span class="badge bg-secondary"><a class="text-reset" href="{% url 'topic-delete' topic.id %}">Delete</a></span>
+            {% endif %}
+            <p class="fst-italic">
+                <small>{{ topic.topic_pub_date|timesince }} ago</small>
+            </p>
+            <div class="vote-section">
+                <div class="vote-buttons mb-4">
+                    {% if is_upvoted %}
+                    <a href="{% url 'upvote-topic' topic.id %}" class="btn btn-light btn-sm">
+                        <i class="bi bi-hand-thumbs-up-fill"></i>
+                    </a>
+                    {% else %}
+                    
+                    <a href="{% url 'upvote-topic' topic.id %}" class="btn btn-light btn-sm">
+                        <i class="bi bi-hand-thumbs-up"></i>
+                    </a>
+                    {% endif %}
+                    <span class="vote-count">{{ upvotes }}</span>
+                    {% if is_downvoted %}
+                    <a href="{% url 'downvote-topic' topic.id %}" class="btn btn-light btn-sm">
+                        <i class="bi bi-hand-thumbs-down-fill"></i>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'downvote-topic' topic.id %}" class="btn btn-light btn-sm">
+                        <i class="bi bi-hand-thumbs-down"></i>
+                    </a>
+                    {% endif %}
+                    <span class="vote-count">{{ downvotes }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <h2>Answers</h2>
+    {% for answer in answers %}
+        <div class="answer">
+            <p>{{ answer.answer_body }}</p>
+            <p class="fst-italic">By 
+                <a href="{% url 'profile' answer.answer_author.username %}">{{ answer.answer_author }}</a> 
+                <small class="">{{ answer.answer_pub_date|timesince }} ago</small>
+            </p>
+            {% if answer.answer_author == request.user %}
+                <a href="{% url 'answer-update' answer.id %}">Edit</a>
+                <small>
+                    <a href="{% url 'answer-delete' answer.id %}">Delete</a>
+                </small>
+            {% endif %}
+        </div>
+        <div class="vote-section">
+            <div class="vote-buttons">
+                <a href="{% url 'upvote-answer' answer.id %}" class="btn btn-light btn-sm">
+                    <i class="bi bi-hand-thumbs-up"></i>
+                </a>
+                
+                    <span class="vote-count">{{ answer.upvotes|default:0 }}</span>
+                    <a href="{% url 'downvote-answer' answer.id %}" class="btn btn-light btn-sm">
+                        <i class="bi bi-hand-thumbs-down"></i>
+                    </a>
+                    <span class="vote-count">{{ answer.downvotes }}</span>
+                
+                </div>
+        </div>
+        <hr>
+    {% endfor %}
+    <h5>Add your answer here</h5>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+</div>
+{% endblock content %}
