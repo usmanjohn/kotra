@@ -76,60 +76,157 @@
     .content-section {
         display: none;
     }
+    .profile-image-container {
+        display: flex;
+        align-items: center; /* Vertically center the content */
+        justify-content: center; /* Horizontally center the content */
+        height: 100%; /* Take full height of the parent */
+    }
+    
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center content vertically in card body */
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .profile-image {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 3px solid #dee2e6;
+    }
+
+    .profile-info {
+        margin-top: 10px;
+    }
+
+    .nav-pills .nav-link {
+        border-radius: 0.25rem;
+        color: #495057;
+    }
+
+    .nav-pills .nav-link.active {
+        color: #fff;
+        background-color: #007bff;
+    }
+
+    .icon-text {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .icon-text i {
+        font-size: 1.2rem;
+    }
+
+    .content-section {
+        display: none;
+        padding-top: 20px;
+    }
+
+    .content-section.active {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .content-item {
+        flex: 1 1 50%; /* Set basis to 50% so each item takes up half the width of the container */
+        padding: 10px;
+    }
+
+    .card {
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .content-section {
+        display: none;
+    }
+    .social-media-icons img {
+        width: 40px; /* Adjusted width for mobile view */
+        height: 40px; /* Adjusted height for mobile view */
+    }
+
+    /* Media query for smaller devices */
+    @media (max-width: 768px) {
+        .social-media-icons img {
+            width: 20px;
+            height: 20px;
+        }
+    }
 </style>
 
     
 <div class="container mt-2">
-    <div class="card mb-3">
-        <div class="row g-0">
-            
-            <div class="col-md-5">
-                <div class="profile-image-container">
-                    <img src="{{ profile_user.userprofile.image.url }}" alt="{{ profile_user.username }}'s profile picture" class="profile-image img-fluid">
+    <div class="container mt-2">
+        <div class="card mb-3">
+            <div class="row g-0">
+                <div class="col-md-5">
+                    <div class="profile-image-container">
+                        <img src="{{ profile_user.userprofile.image.url }}" alt="{{ profile_user.username }}'s profile picture" class="profile-image img-fluid">
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card-body">
-                    <h4>{{ profile_user.username }}</h4>
-                    <p><span class="badge bg-success">Gains: {{ profile_user.userprofile.total_gains }}</span></p>
-                    <p><span class="badge bg-info">Role: {{ profile_user.userprofile.badge_status }}</span></p>
-                    <p>{{ profile_user.email }}</p>
-                    <p>{{ profile_user.userprofile.bio }}</p>
-                    {% if is_own_profile %}
-                        <a href="{% url 'profile-update' profile_user.username %}"><span class="badge bg-secondary bg-gradient">Update Profile</span></a>
-                    {% endif %}
+                <div class="col-md-4">
+                    <div class="card-body">
+                        <h4>{{ profile_user.username }}</h4>
+                        <p><span class="badge bg-success">Gains: {{ profile_user.userprofile.total_gains }}</span></p>
+                        <p><span class="badge bg-info">Role: {{ profile_user.userprofile.badge_status }}</span></p>
+                        <p>{{ profile_user.email }}</p>
+                        <p>{{ profile_user.userprofile.bio }}</p>
+                        {% if is_own_profile %}
+                            <a href="{% url 'profile-update' profile_user.username %}"><span class="badge bg-secondary bg-gradient">Update Profile</span></a>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card-body">
-                    <ul class="list-inline">
-                        <li class="list-inline-item">
-                            <a href="https://www.instagram.com/yourprofile" target="_blank">
-                                <img src="{% static 'images/instagram.jpg' %}" alt="Instagram" style="width: 60px; height: 60px;">
-                            </a>
-                        </li>
-                        <li class="list-inline-item">
-                            <a href="https://www.facebook.com/yourprofile" target="_blank">
-                                <img src="{% static 'images/facebook.jpg' %}" alt="Facebook" style="width: 40px; height: 40px;">
-                            </a>
-                        </li>
-                   
-                        <li class="list-inline-item">
-                            <a href="https://www.twitter.com/yourprofile" target="_blank">
-                                <img src="{% static 'images/twitterr.png' %}" alt="Twitter" style="width: 40px; height: 40px;">
-                            </a>
-                        </li>
-                        <li class="list-inline-item">
-                            <a href="https://www.twitter.com/yourprofile" target="_blank">
-                                <img src="{% static 'images/youtuber.png' %}" alt="Twitter" style="width: 40px; height: 40px;">
-                            </a>
-                        </li>
-                        <!-- Add more social media links as needed -->
-                    </ul>
+                <div class="col-md-3">
+                    <div class="card-body social-media-icons">
+                        <ul class="list-inline">
+                            {% if user.userprofile.instagram_url %}
+                            <li class="list-inline-item">
+                                <a href="{{ user.userprofile.instagram_url }}" target="_blank">
+                                    <img src="{% static 'images/instagram.jpg' %}" alt="Instagram">
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if user.userprofile.facebook_url %}
+                            <li class="list-inline-item">
+                                <a href="{{ user.userprofile.facebook_url }}" target="_blank">
+                                    <img src="{% static 'images/facebook.jpg' %}" alt="Facebook">
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if user.userprofile.twitter_url %}
+                            <li class="list-inline-item">
+                                <a href="{{ user.userprofile.twitter_url }}" target="_blank">
+                                    <img src="{% static 'images/twitterr.png' %}" alt="Twitter">
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if user.userprofile.youtube_url %}
+                            <li class="list-inline-item">
+                                <a href="{{ user.userprofile.youtube_url }}" target="_blank">
+                                    <img src="{% static 'images/youtuber.png' %}" alt="YouTube">
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if user.userprofile.other_url %}
+                            <li class="list-inline-item">
+                                <a href="{{ user.userprofile.other_url }}" target="_blank">
+                                    <img src="{{ user.userprofile.link_image.url }}" alt="Other Link">
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    
 
 
 
@@ -155,7 +252,7 @@
 
     <div id="topics" class="content-section">
         <div class="row">
-        {% for topic in profile_user.topic_auth.all %}
+        {% for topic in topics %}
         
         <div class="col-md-6 mb-3">
         
@@ -184,7 +281,7 @@
                                 <small class="text-muted">{{ topic.topic_pub_date|timesince }}</small>
                             </p>
                             <p class="card-text">
-                                <i class="bi bi-hand-thumbs-up"></i> {{ topic.upvotes }}
+                                <i class="bi bi-hand-thumbs-up"></i> {{ topic.gains }}
                                 
                             </p>
                         
@@ -230,10 +327,12 @@
                                 <small class="text-muted">{{ answer.topic_parent.topic_pub_date|timesince }}</small>
                             </p>
                             <p class="card-text">
-                                <i class="bi bi-hand-thumbs-up"></i> {{ topic.upvotes }}
+                                <i class="bi bi-hand-thumbs-up"></i> {{ answer.topic_parent.gains }}
                                 
                             </p>
-                            <p class = 'fst-italic'>Answer: {{answer.answer_body}}</p>
+                            <p class = 'fst-italic text-truncate'>Answer: {{answer.answer_body}}  </p>
+                        
+
                         </div>
                     
                    

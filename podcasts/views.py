@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_list_or_404, get_object_or_40
 from .models import Podcast, Saved_podcasts
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import JsonResponse
 
 def podcast_list(request):
     podcasts = Podcast.objects.all().order_by('-date_published', 'title')
@@ -27,8 +28,7 @@ def save_podcast(request, pk):
     if podcast not in saved_podcasts.podcast.all():
         saved_podcasts.podcast.add(podcast)
         messages.success(request, "Podcast added to your saved list.")
-    else:
-        messages.info(request, "This podcast is already in your saved list.")
+    
 
     return redirect('podcast-detail', pk=pk)
 
@@ -40,9 +40,9 @@ def unsave_podcast(request, pk):
         saved_podcasts = Saved_podcasts.objects.get(user=request.user)
         if podcast in saved_podcasts.podcast.all():
             saved_podcasts.podcast.remove(podcast)
-            messages.success(request, "Podcast has been removed from your saved list.")
-        else:
-            messages.info(request, "This podcast was not in your saved list.")
+            
+        
+            
     except Saved_podcasts.DoesNotExist:
         messages.error(request, "You do not have any saved podcasts.")
     

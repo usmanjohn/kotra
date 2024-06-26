@@ -2,11 +2,27 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <p>We are happy to have you with us together!</p>
-    <form action="" method = "POST">
-        {% csrf_token %}
-        {{form|crispy}}
-
-        <input type="submit" name = 'submit'> Submit
-    </form>
-    {% endblock content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-1">Welcome to our Train!</h4>
+                    <p class="text-center">We are happy to have you join us!</p>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="text-center mb-2">
+                <p>Already have an account? <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm">Login</a></p>
+                
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

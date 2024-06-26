@@ -11,5 +11,13 @@
     {{ p_form|crispy }}
     <button type="submit" class="btn btn-primary">Update</button>
 </form>
+
+<div>
+    <!-- Displaying social media links -->
+    <a href="{{ user.userprofile.instagram_url }}" target="_blank">Instagram</a>
+    <a href="{{ user.userprofile.facebook_url }}" target="_blank">Facebook</a>
+    <a href="{{ user.userprofile.twitter_url }}" target="_blank">Twitter</a>
+    <a href="{{ user.userprofile.youtube_url }}" target="_blank">YouTube</a>
+</div>
 {% endblock %}
 

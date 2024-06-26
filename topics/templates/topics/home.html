@@ -1,19 +1,26 @@
 {% extends "topics/base.html" %}
 
 {% block content %}
-<ul class="list-group list-group-horizontal-lg">
-    <a href="{% url 'topic-create' %}"><span class="badge bg-light"><li class="list-group-item">Create</li></span></a>
-    <a href=""><span class="badge bg-light"><li class="list-group-item">Filter</li></span></a>
-    <a href=""><span class="badge bg-light"><li class="list-group-item">Search</li></span></a>
-    <a href=""><span class="badge bg-light"><li class="list-group-item">Tags</li></span></a>
-    </ul>
+
 <div class="container mt-4">
     
-        
+    <div class="col-12 mb-1">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <a href="{% url 'topic-create' %}" class="btn btn-outline-primary">
+                <i class="bi bi-plus-circle"></i> Create
+            </a>
+            <a href="" class="btn btn-outline-secondary">
+                <i class="bi bi-funnel"></i> Filter
+            </a>
+            <a href="" class="btn btn-outline-success">
+                <i class="bi bi-search"></i> Search
+            </a>
+        </div>    
+
     <div class="row">
-        
+       
         {% for topic in topics %}
-        <div class="col-md-6 mb-3">
+        <div class="col-md-6 mb-3 mt-2">
             <div class="card h-100">
                 <div class="row g-0">
                     <div class="col-md-3 text-center my-auto">

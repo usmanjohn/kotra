@@ -5,13 +5,15 @@
 
 <div class="container mt-4">
     
-    <ul class="list-group list-group-horizontal-lg">
-        <h5 class="mb-4" style="margin-right: 4px;">User Profiles</h5>
+    <div class="btn-group" role="group" aria-label="Basic example">
         
-        <a href=""><span class="badge bg-light"><li class="list-group-item">Search</li></span></a>
-        <a href=""><span class="badge bg-light"><li class="list-group-item">Sort</li></span></a>
-        <a href=""><span class="badge bg-light"><li class="list-group-item">Role</li></span></a>
-    </ul>
+        <a href="" class="btn btn-outline-secondary">
+            <i class="bi bi-filter-square"></i> Sort
+        </a>
+        <a href="" class="btn btn-outline-success">
+            <i class="bi bi-search"></i> Search
+        </a>
+    </div>
     <div class="row">
         {% for obj in object_list %}
         <div class="col-md-4 mb-4">

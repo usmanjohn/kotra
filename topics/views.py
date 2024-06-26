@@ -102,7 +102,7 @@ def topic_detail(request, pk):
         
         form = AnswerForm(request.POST)
         if not request.user.is_authenticated:
-                messages = messages.error(request, "You need to be logged in to vote.")
+               
                 return redirect('login')
         if form.is_valid():
             answer = form.save(commit=False)
@@ -173,7 +173,7 @@ def deleteTopic(request, pk):
     topic = get_object_or_404(Topic, pk = pk, topic_author = request.user)
     if request.method == 'POST':
         topic.delete()
-        messages.success(request, f'You have changed successfully')
+        
         return redirect('/')
     context = {'topic':topic}
     return render(request, 'topics/topic_delete.html', context)
@@ -185,7 +185,7 @@ def deleteAnswer(request, pk):
     alfa = answer.topic_parent
     if request.method == 'POST':
         answer.delete()
-        messages.success(request, f'You have deleted successfully')
+        
         return redirect('topic-detail', pk = alfa.pk )
 
     
@@ -197,7 +197,7 @@ from .models import Topic, Upvoter
 
 def upvote_topic(request, topic_id):
     if not request.user.is_authenticated:
-        messages.error(request, "You need to be logged in to vote.")
+        
         return redirect('login')
 
     topic = get_object_or_404(Topic, id=topic_id)
@@ -219,13 +219,13 @@ def upvote_topic(request, topic_id):
     else:
         # If no existing vote, create a new upvote
         Upvoter.objects.create(topic=topic, user=user, vote_type=1)
-        messages.success(request, "Upvoted successfully.")
+        
 
     return redirect('topic-detail', pk=topic_id)
 
 def downvote_topic(request, topic_id):
     if not request.user.is_authenticated:
-        messages.error(request, "You need to be logged in to vote.")
+        
         return redirect('login')
 
     topic = get_object_or_404(Topic, id=topic_id)
@@ -272,7 +272,7 @@ def downvote_answer(request, answer_id):
     return redirect('topic-detail', pk=answer.topic_parent.id)
 
 def unauthorized_vote(request):
-    messages.error(request, "You need to be logged in to vote.")
+    
     return redirect('login')
 
 def tag_list(request, tag):

@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django_ckeditor_5.fields import CKEditor5Field
 from taggit.managers import TaggableManager
-from django.db.models import Count
+from django.db.models import Count, Q
 
 # Create your models here.
 class Topic(models.Model):
@@ -24,6 +24,10 @@ class Topic(models.Model):
     
     def __str__(self) -> str:
         return self.topic_title
+    
+    def gains(self):
+        # This property will return the count of upvotes for this particular topic instance
+        return Upvoter.objects.filter(topic=self, vote_type=1).count()
 
 class SavedTopic(models.Model): 
     user = models.ForeignKey(User, related_name='saved_topics', on_delete=models.CASCADE)
@@ -56,6 +60,10 @@ class Answer(models.Model):
 
     def __str__(self) -> str:
         return self.answer_body
+    def gains(self):
+        # This property will return the count of upvotes for this particular topic instance
+        return UpvoterAnswer.objects.filter(answer=self, vote_type=1).count()
+
     
 
 class Upvoter(models.Model):

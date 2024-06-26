@@ -64,11 +64,16 @@ def LogOut(request):
 
 def view_profile(request, username):
     profile_user = get_object_or_404(User, username=username)
+    topics = Topic.objects.filter(topic_author = profile_user)
+    
+    
     books = profile_user.books_uploaded.all()
     saved_topics = profile_user.saved_topics.all()
     is_own_profile = request.user.is_authenticated and request.user == profile_user
+    
     context = {
         'profile_user': profile_user,
+        'topics':topics,
         'is_own_profile': is_own_profile,
         'saved_topics':saved_topics,
         'books':books
@@ -80,6 +85,7 @@ def view_profile(request, username):
 def update_profile(request, username):
     profile_user = get_object_or_404(User, username=username)
     if request.user == profile_user:
+        user = request.user
         if request.method == 'POST':
             u_form = UserUpdateForm(request.POST, instance=request.user)
             p_form = UserProfileUpdateForm(request.POST, request.FILES, instance=request.user.userprofile)
@@ -87,16 +93,16 @@ def update_profile(request, username):
             if u_form.is_valid() and p_form.is_valid():
                 u_form.save()
                 p_form.save()
-                messages.success(request, 'Your profile has been updated successfully')
+                
                 return redirect(reverse('profile', kwargs={'username': request.user.username}))
         else:
             u_form = UserUpdateForm(instance=request.user)
             p_form = UserProfileUpdateForm(instance=request.user.userprofile)
-    else:
-        return HttpResponse('You are not the owner of the profile')
+    
     context = {
         'u_form': u_form,
-        'p_form': p_form
+        'p_form': p_form,
+        'user':user
     }
 
     return render(request, 'users/update_profile.html', context)

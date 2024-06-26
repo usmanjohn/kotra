@@ -12,6 +12,13 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='profile_pics', default='profile_pics/default.png')
     bio = models.CharField(max_length=150)
+    instagram_url = models.URLField(blank=True, null=True, default='#')
+    facebook_url = models.URLField(blank=True, null=True, default='#')
+    twitter_url = models.URLField(blank=True, null=True, default='#')
+    youtube_url = models.URLField(blank=True, null=True, default='#')
+    other_url = models.URLField(blank=True, null=True, default='#')
+    link_image = models.ImageField(upload_to='links', default='links/personal_profile.png')
+    
 
     def __str__(self) -> str:
         return f'{self.user.username} Profile' 
