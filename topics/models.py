@@ -25,10 +25,11 @@ class Topic(models.Model):
     def __str__(self) -> str:
         return self.topic_title
     
-    def gains(self):
+    def upvotes(self):
         # This property will return the count of upvotes for this particular topic instance
         return Upvoter.objects.filter(topic=self, vote_type=1).count()
 
+   
 class SavedTopic(models.Model): 
     user = models.ForeignKey(User, related_name='saved_topics', on_delete=models.CASCADE)
     topic = models.ForeignKey(Topic, related_name='saved_by_users', on_delete=models.CASCADE)

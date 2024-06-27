@@ -19,16 +19,21 @@ def podcast_detail(request, pk):
     return render(request, 'podcasts/podcast_detail.html', context)
 
 @login_required
+
+
+        # Unsave logic here
+        
 def save_podcast(request, pk):
     podcast = get_object_or_404(Podcast, pk=pk)
     # Get or create a SavedPodcast instance for the user
+
     saved_podcasts, created = Saved_podcasts.objects.get_or_create(user=request.user)
-    
-    # Check if the podcast is already saved, and add it if not
+
+# Check if the podcast is already saved, and add it if not
     if podcast not in saved_podcasts.podcast.all():
         saved_podcasts.podcast.add(podcast)
         messages.success(request, "Podcast added to your saved list.")
-    
+
 
     return redirect('podcast-detail', pk=pk)
 

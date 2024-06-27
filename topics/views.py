@@ -1,22 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Topic,Answer,UpvoterAnswer
+from .models import Topic,Answer,UpvoterAnswer,SavedTopic
 from .forms import TopicForm, AnswerForm, Upvoter 
 from django.views.generic import ListView, DeleteView,DetailView,UpdateView, CreateView
 from django.contrib import messages
-from .models import Topic, SavedTopic
+from django.http import JsonResponse
 from taggit.models import Tag
-
-            
-            
+           
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
 from django.db.models import Q
-from .models import Topic
-
-
+from rest_framework import generics
+   
 def about(request):
     return render(request, 'topics/about.html')
-
 
 
 class TopicListView(ListView):
@@ -62,6 +57,7 @@ class TopicListView(ListView):
 def save_topic(request, topic_id):
     topic = get_object_or_404(Topic, id=topic_id)
     SavedTopic.objects.get_or_create(user=request.user, topic=topic)
+    
     return redirect('topic-detail', pk=topic_id)
 
 @login_required
@@ -91,10 +87,7 @@ def topic_detail(request, pk):
     if request.user.is_authenticated:
         is_upvoted = Upvoter.objects.filter(user = request.user, topic = topic, vote_type =1).exists()
     
-    is_downvoted = False
-    if request.user.is_authenticated:
-        is_downvoted = Upvoter.objects.filter(user = request.user, topic = topic, vote_type = -1).exists()
-
+    
     for answer in answers:
         answer.upvotes = answer.votes.filter(vote_type=1).count()
         answer.downvotes = answer.votes.filter(vote_type=-1).count()
@@ -120,7 +113,7 @@ def topic_detail(request, pk):
         'form' : form,
         'is_saved': is_saved,
         'is_upvoted':is_upvoted,
-        'is_downvoted':is_downvoted,
+        
         'upvotes': topic.question.filter(vote_type=1).count(),
         'downvotes': topic.question.filter(vote_type=-1).count(),
     }
@@ -135,6 +128,7 @@ def createTopic(request):
             topic = form.save(commit=False)
             topic.topic_author = request.user
             topic.save() 
+            messages.success(request, 'Topic created successfully')
             return redirect('/')
     else:
         form = TopicForm()
@@ -191,65 +185,30 @@ def deleteAnswer(request, pk):
     
     context = {'topic':answer}
     return render(request, 'topics/answer_delete.html', context)
-from django.contrib import messages
-from django.shortcuts import redirect, get_object_or_404
-from .models import Topic, Upvoter
+
+
+
 
 def upvote_topic(request, topic_id):
     if not request.user.is_authenticated:
-        
-        return redirect('login')
-
-    topic = get_object_or_404(Topic, id=topic_id)
-    user = request.user
-
-    # Check if the user has already voted on this topic
-    vote = Upvoter.objects.filter(topic=topic, user=user).first()
-
-    if vote:
-        # If an existing vote is an upvote, remove it (toggle off)
+        return JsonResponse({'error': 'Authentication required'}, status=403)
+    topic = get_object_or_404(Topic, pk=topic_id)
+    vote, created = Upvoter.objects.get_or_create(topic=topic, user=request.user, defaults={'vote_type': 1})
+    if not created:
         if vote.vote_type == 1:
             vote.delete()
-            
-        # If it was a downvote, change it to an upvote
         else:
             vote.vote_type = 1
             vote.save()
-            
-    else:
-        # If no existing vote, create a new upvote
-        Upvoter.objects.create(topic=topic, user=user, vote_type=1)
-        
+    upvotes = Upvoter.objects.filter(topic=topic, vote_type=1).count()
+    return JsonResponse({
+    'upvotes': upvotes, 
+    'upvoted': vote.vote_type == 1 if not created else False,
+})
 
-    return redirect('topic-detail', pk=topic_id)
 
-def downvote_topic(request, topic_id):
-    if not request.user.is_authenticated:
-        
-        return redirect('login')
 
-    topic = get_object_or_404(Topic, id=topic_id)
-    user = request.user
 
-    # Check if the user has already voted on this topic
-    vote = Upvoter.objects.filter(topic=topic, user=user).first()
-
-    if vote:
-        # If an existing vote is an upvote, remove it (toggle off)
-        if vote.vote_type == -1:
-            vote.delete()
-            
-        # If it was a downvote, change it to an upvote
-        else:
-            vote.vote_type = -1
-            vote.save()
-            
-    else:
-        # If no existing vote, create a new upvote
-        Upvoter.objects.create(topic=topic, user=user, vote_type=-1)
-        
-
-    return redirect('topic-detail', pk=topic_id)
 
 @login_required
 def upvote_answer(request, answer_id):

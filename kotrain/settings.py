@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-6y7_62a1@rcz3!67cmy_@n7o!-hvcl50h7-9bcd^(#!&41_uzc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.35.145']
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'crispy_bootstrap4',
     
     'taggit',
-    'django_ckeditor_5'
+    'django_ckeditor_5',
+    'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -56,9 +58,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     
     
 ]
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 ROOT_URLCONF = 'kotrain.urls'
 

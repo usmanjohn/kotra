@@ -1,11 +1,18 @@
 from django.urls import path, include
 from . import views
 from .views import TopicListView
+from rest_framework.routers import DefaultRouter
+from django.views.generic import RedirectView
+
+
+
+
 
 urlpatterns = [
-    #path('', views.Home, name = 'home'),
+    
     path('', TopicListView.as_view(), name = 'home'), 
     path('about/', views.about, name='about'),
+
     
 
     path('topics/detail/<pk>/', views.topic_detail, name = 'topic-detail'),
@@ -22,12 +29,14 @@ urlpatterns = [
     path('topic/<int:topic_id>/unsave/', views.unsave_topic, name='unsave-topic'),
     
     path('topic/<int:topic_id>/upvote/', views.upvote_topic, name='upvote-topic'),
-    path('topic/<int:topic_id>/downvote/', views.downvote_topic, name='downvote-topic'),
-     path('answer/<int:answer_id>/upvote/', views.upvote_answer, name='upvote-answer'),
+    
+    path('answer/<int:answer_id>/upvote/', views.upvote_answer, name='upvote-answer'),
     path('answer/<int:answer_id>/downvote/', views.downvote_answer, name='downvote-answer'),
     path('unauthorized-vote/', views.unauthorized_vote, name='unauthorized-vote'),
 
     path('tagged/<tag>/', views.tag_list, name='tagged-topics'),
+
+    path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico'))
 ]
 
 

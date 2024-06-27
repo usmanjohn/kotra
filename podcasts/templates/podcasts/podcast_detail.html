@@ -41,16 +41,21 @@
                 </div>
                 <div class="card-body">
                     <p class="card-text">{{ podcast.description }}</p>
-                    <audio controls id="audio-player-{{ podcast.id }}">
-                        <source src="{{ podcast.audio.url }}" type="audio/mpeg">
+                    <button onclick="loadAudio(this, '{{ podcast.audio.url }}', '{{ podcast.id }}')" class="btn btn-primary">
+                        Play Audio
+                    </button>
+                    <audio controls id="audio-player-{{ podcast.id }}" style="display:none;">
                         Your browser does not support the audio element.
                     </audio>
+                    
                     <ul class="list-unstyled mt-3">
                         <li><strong>Length:</strong> {{ podcast.length }} minutes</li>
                         <li><strong>Uploader:</strong> {{ podcast.audio_uploader.username }}</li>
                         <li><strong>Speaker:</strong> {{ podcast.speaker.username }}</li>
                     </ul>
                 </div>
+                
+                
                 <div class="card-footer text-muted">
                     <small>Published: {{ podcast.date_published|date:"M d, Y" }}</small>
                 </div>
@@ -58,4 +63,30 @@
         </div>
     </div>
 </div>
+<script>
+    function loadAudio(button, url, id) {
+        var audioPlayer = document.getElementById('audio-player-' + id);
+        if (audioPlayer.style.display === 'none') {
+            // Set the source of the audio only the first time
+            if (!audioPlayer.src) {
+                var source = document.createElement('source');
+                source.src = url;
+                source.type = 'audio/mpeg';
+                audioPlayer.appendChild(source);
+            }
+            audioPlayer.style.display = 'block'; // Show the audio player
+            audioPlayer.play(); // Start playing
+            button.textContent = 'Pause Audio'; // Change button text
+        } else {
+            if (audioPlayer.paused) {
+                audioPlayer.play(); // Resume playing
+                button.textContent = 'Pause Audio';
+            } else {
+                audioPlayer.pause(); // Pause the audio
+                button.textContent = 'Play Audio';
+            }
+        }
+    }
+    </script>
+    
 {% endblock %}

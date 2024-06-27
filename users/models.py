@@ -9,7 +9,7 @@ from django.db.models import Count, Q
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userprofile')
     image = models.ImageField(upload_to='profile_pics', default='profile_pics/default.png')
     bio = models.CharField(max_length=150)
     instagram_url = models.URLField(blank=True, null=True, default='#')

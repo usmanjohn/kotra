@@ -26,11 +26,13 @@ def register(request):
             if user_image:
                 user.profile.profile_picture = user_image
                 user.profile.save()
+            
 
             # Authenticate and log in the user
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)
+            messages.success(request, 'Account created')
             if user is not None:
                 login(request, user)
                 return redirect('/')

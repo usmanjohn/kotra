@@ -50,31 +50,22 @@
             </p>
             <div class="vote-section">
                 <div class="vote-buttons mb-4">
-                    {% if is_upvoted %}
-                    <a href="{% url 'upvote-topic' topic.id %}" class="btn btn-light btn-sm">
-                        <i class="bi bi-hand-thumbs-up-fill"></i>
-                    </a>
-                    {% else %}
                     
-                    <a href="{% url 'upvote-topic' topic.id %}" class="btn btn-light btn-sm">
-                        <i class="bi bi-hand-thumbs-up"></i>
-                    </a>
-                    {% endif %}
-                    <span class="vote-count">{{ upvotes }}</span>
-                    {% if is_downvoted %}
-                    <a href="{% url 'downvote-topic' topic.id %}" class="btn btn-light btn-sm">
-                        <i class="bi bi-hand-thumbs-down-fill"></i>
-                    </a>
-                    {% else %}
-                    <a href="{% url 'downvote-topic' topic.id %}" class="btn btn-light btn-sm">
-                        <i class="bi bi-hand-thumbs-down"></i>
-                    </a>
-                    {% endif %}
-                    <span class="vote-count">{{ downvotes }}</span>
+                    <button id="upvote-btn" class="btn btn-light btn-sm" data-upvoted="{{ is_upvoted }}">
+                        {% if is_upvoted %}
+                            <i class="bi bi-hand-thumbs-up-fill"></i>
+                        {% else %}
+                            <i class="bi bi-hand-thumbs-up"></i>
+                        {% endif %}
+                    </button>
+                    <span id="upvote-count">{{ upvotes }}</span>
+                    
+
                 </div>
             </div>
         </div>
     </div>
+    
     <hr>
     
     <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
@@ -123,4 +114,40 @@
     
     
 </div>
+<script>
+    document.getElementById('upvote-btn').addEventListener('click', function() {
+        fetch("{% url 'upvote-topic' topic.id %}", {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            updateCountsAndButtons(data);
+        })
+        .catch(error => console.error('Error:', error));
+    });
+    
+    function updateCountsAndButtons(data) {
+        const upvotes = data.upvotes || 0;
+        
+        document.getElementById('upvote-count').textContent = upvotes;
+        updateVoteButton(data.upvoted);
+    }
+    
+    function updateVoteButton(upvoted) {
+        var upvoteBtn = document.getElementById('upvote-btn');
+        upvoteBtn.children[0].className = upvoted ? 'bi bi-hand-thumbs-up' : 'bi bi-hand-thumbs-up-fill';
+    }
+    
+    
+    
+    
+    
+</script>
+
+
+
 {% endblock content %}
