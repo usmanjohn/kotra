@@ -6,12 +6,38 @@ from django.contrib import messages
 from django.http import JsonResponse
 from taggit.models import Tag
            
+from podcasts.models import Podcast
+from users.models import UserProfile, User
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from rest_framework import generics
    
 def about(request):
     return render(request, 'topics/about.html')
+
+
+def search_results(request):
+    query = request.GET.get('q', '')
+    if query:
+        topic_results = Topic.objects.filter(Q(topic_title__icontains=query) | Q(topic_body__icontains=query))
+        podcast_results = Podcast.objects.filter(Q(title__icontains=query) | Q(description__icontains=query))
+        user_results = UserProfile.objects.filter(Q(user__username__icontains=query) | Q(bio__icontains=query))
+    else:
+        topic_results = Podcast.results = user_results = []
+    job_results = None
+    tutorial_results = None
+    test_results = None
+    context = {
+        'query': query,
+        'topic_results': topic_results,
+        'podcast_results': podcast_results,
+        'user_results': user_results,
+        "test_results":test_results,
+        "tutorial_results":tutorial_results,
+        'job_results':job_results
+    }
+    return render(request, 'topics/search_results.html', context)
 
 
 class TopicListView(ListView):
@@ -82,15 +108,16 @@ def topic_detail(request, pk):
     if request.user.is_authenticated:
         is_saved = SavedTopic.objects.filter(user=request.user, topic=topic).exists()
     is_own_topic = request.user.is_authenticated and request.user == topic.topic_author
-    
-    is_upvoted = False
     if request.user.is_authenticated:
-        is_upvoted = Upvoter.objects.filter(user = request.user, topic = topic, vote_type =1).exists()
-    
-    
+        topic.is_upvoted = Upvoter.objects.filter(user=request.user, topic=topic, vote_type=1).exists()
+
     for answer in answers:
-        answer.upvotes = answer.votes.filter(vote_type=1).count()
-        answer.downvotes = answer.votes.filter(vote_type=-1).count()
+        if request.user.is_authenticated:
+            answer.is_upvoted = UpvoterAnswer.objects.filter(user=request.user, answer=answer, vote_type=1).exists()
+
+
+    
+        
     if request.method == 'POST':
         
         form = AnswerForm(request.POST)
@@ -111,16 +138,73 @@ def topic_detail(request, pk):
         'own_topic':is_own_topic, 
         
         'form' : form,
-        'is_saved': is_saved,
-        'is_upvoted':is_upvoted,
-        
-        'upvotes': topic.question.filter(vote_type=1).count(),
-        'downvotes': topic.question.filter(vote_type=-1).count(),
+        'is_saved': is_saved,        
     }
     return render(request, 'topics/topic_detail.html', context)
 
+
+def upvote_topic(request, topic_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Authentication required'}, status=403)
+
+    topic = get_object_or_404(Topic, pk=topic_id)
+    vote, created = Upvoter.objects.get_or_create(
+        topic=topic, 
+        user=request.user,
+        defaults={'vote_type': 1}
+    )
+
+    if not created:
+        if vote.vote_type == 1:
+            vote.delete()
+            is_upvoted = False
+        else:
+            vote.vote_type = 1
+            vote.save()
+            is_upvoted = True
+    else:
+        is_upvoted = True
+
+    upvotes = Upvoter.objects.filter(topic=topic, vote_type=1).count()
+    return JsonResponse({
+        'upvotes': upvotes, 
+        'upvoted': is_upvoted,
+    })
+
+def upvote_answer(request, answer_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Authentication required'}, status=403)
+
+    answer = get_object_or_404(Answer, pk=answer_id)
+    vote, created = UpvoterAnswer.objects.get_or_create(
+        answer=answer, 
+        user=request.user,
+        defaults={'vote_type': 1}  # Default vote_type when creating a new vote
+    )
+
+    if not created:
+        if vote.vote_type == 1:
+            # If already upvoted, remove the vote
+            vote.delete()
+            is_upvoted = False
+        else:
+            # Change from downvote to upvote
+            vote.vote_type = 1
+            vote.save()
+            is_upvoted = True
+    else:
+        # When creating a new vote, it's already set to upvote by `defaults`
+        is_upvoted = True
+
+    answer_upvotes = UpvoterAnswer.objects.filter(answer=answer, vote_type=1).count()
+    return JsonResponse({
+        'answer_upvotes': answer_upvotes,
+        'answer_upvoted': is_upvoted
+    })
+
+
 @login_required
-def createTopic(request):
+def createTopic(request): 
     
     if request.method =='POST':
         form = TopicForm(request.POST)
@@ -188,47 +272,14 @@ def deleteAnswer(request, pk):
 
 
 
-
-def upvote_topic(request, topic_id):
-    if not request.user.is_authenticated:
-        return JsonResponse({'error': 'Authentication required'}, status=403)
-    topic = get_object_or_404(Topic, pk=topic_id)
-    vote, created = Upvoter.objects.get_or_create(topic=topic, user=request.user, defaults={'vote_type': 1})
-    if not created:
-        if vote.vote_type == 1:
-            vote.delete()
-        else:
-            vote.vote_type = 1
-            vote.save()
-    upvotes = Upvoter.objects.filter(topic=topic, vote_type=1).count()
-    return JsonResponse({
-    'upvotes': upvotes, 
-    'upvoted': vote.vote_type == 1 if not created else False,
-})
-
-
-
-
-
-@login_required
-def upvote_answer(request, answer_id):
-    answer = get_object_or_404(Answer, id=answer_id)
-    user = request.user
-    vote, created = UpvoterAnswer.objects.get_or_create(user=user, answer=answer, defaults={'vote_type':1})
-    if not created and vote.vote_type != 1:
-        vote.vote_type = 1
-        vote.save()   
-    return redirect('topic-detail', pk=answer.topic_parent.id)
-
-@login_required
-def downvote_answer(request, answer_id):
-    answer = get_object_or_404(Answer, id=answer_id)
-    user = request.user
-    vote, created = UpvoterAnswer.objects.get_or_create(user=user, answer=answer, defaults={'vote_type':-1})
-    if not created and vote.vote_type != -1:
-        vote.vote_type = -1
-        vote.save()        
-    return redirect('topic-detail', pk=answer.topic_parent.id)
+#def upvote_answer(request, answer_id):
+#    answer = get_object_or_404(Answer, id=answer_id)
+#    user = request.user
+#    vote, created = UpvoterAnswer.objects.get_or_create(user=user, answer=answer, defaults={'vote_type':1})
+#    if not created and vote.vote_type != 1:
+#        vote.vote_type = 1
+#        vote.save()   
+#    return redirect('topic-detail', pk=answer.topic_parent.id)
 
 def unauthorized_vote(request):
     

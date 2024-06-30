@@ -19,6 +19,23 @@
             display: flex;
             align-items: center;
         }
+        .ck-content img {
+            max-width: 100%;
+            height: auto;
+            display: block; /* Ensures images are not inline */
+            margin: 10px auto; /* Centers images and adds vertical space */
+        }
+        .ck-content {
+            max-width: 100%;  /* Ensures the content does not overflow its container */
+            overflow: hidden; /* Prevents content from spilling out */
+            word-wrap: break-word; /* Ensures long words do not cause horizontal scrolling */
+        
+            img {
+                max-width: 100%;  /* Makes images responsive */
+                height: auto;     /* Maintains the aspect ratio */
+            }
+        }
+        
     </style>
 </head>
 <body>
@@ -40,7 +57,7 @@
         
         
           
-        <div class="container-fluid">
+        <div class="container-fluid">       
             
             <a href="{% url 'home' %}" class="navbar-brand">
                 <img src="{{ logo_url }}" alt="Site Logo" style="width: 150px; height: auto;">
@@ -63,16 +80,16 @@
                           <li><a class="dropdown-item" href="#">Guidance</a></li>
                         </ul>
                       </div>
-                    <li class="nav-item train-part" ><a class="nav-link" href="{% url 'home' %}">Topics</a></li>
+                    <li class="nav-item train-part"  ><a class="nav-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Topics created by the users" href="{% url 'home' %}">Topics</a></li>
                     
-                    <li class="nav-item train-part" ><a class="nav-link" href="{% url 'book-list' %}">Books</a></li>
-                    <li class="nav-item train-part" ><a class="nav-link" href="">Tutorials</a></li>
+                    <li class="nav-item train-part" data-bs-toggle="tooltip" data-bs-placement="top" title="Books on sell for your learning" ><a class="nav-link" href="{% url 'book-list' %}">Books</a></li>
+                    <li class="nav-item train-part" data-bs-toggle="tooltip" data-bs-placement="top" title="See tutorials made by experts" ><a class="nav-link" href="{% url 'tutors-list' %}">Tutorials</a></li>
                    
-                    <li class="nav-item train-part" ><a class="nav-link" href="{% url 'podcast-list' %}">Podcasts</a></li>
-                    <li class="nav-item train-part" ><a class="nav-link" href="">Tests</a></li>
+                    <li class="nav-item train-part" data-bs-toggle="tooltip" data-bs-placement="top" title="Listen Podcasts we made"><a class="nav-link" href="{% url 'podcast-list' %}">Podcasts</a></li>
+                    <li class="nav-item train-part" data-bs-toggle="tooltip" data-bs-placement="top" title="Take mock tests"><a class="nav-link" href="">Tests</a></li>
                     
-                    <li class="nav-item train-part" ><a class="nav-link" href="">Jobs</a></li>
-                    <li class="nav-item train-part" ><a class="nav-link" href="{% url 'profile-list' %}">Passengers</a></li>
+                    <li class="nav-item train-part" data-bs-toggle="tooltip" data-bs-placement="top" title="Find Jobs in Korea"><a class="nav-link" href="">Jobs</a></li>
+                    <li class="nav-item train-part" data-bs-toggle="tooltip" data-bs-placement="top" title="See passengers of KoTrain"><a class="nav-link" href="{% url 'profile-list' %}">Passengers</a></li>
 
                     
               
@@ -82,10 +99,11 @@
                 <!-- Search form and user profile -->
                 <div class="d-flex align-items-center">
                     
-                    <form class="form-inline me-2">
-                        <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    <form action="{% url 'search_results' %}" method="GET" class="form-inline">
+                        <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search here" aria-label="Search">
+                        <button class="btn btn-outline-success my-2 my-sm-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top" type="submit">Search</button>
                     </form>
+                    
                     {% if user.is_authenticated %}
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
@@ -102,7 +120,7 @@
                     </ul>
                     {% else %}
                     <div class="d-flex">
-                        <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">Login</a>
+                        <a href="{% url 'login' %}?next={% firstof request.path '/' %}" class="btn btn-outline-primary me-2">Login</a>
                         <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
                     </div>
                     {% endif %}

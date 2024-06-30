@@ -1,0 +1,42 @@
+{% extends "topics/base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">{{ tutor.title }}</h3>
+            <div class="card-subtitle mb-2 text-muted">
+                <span>Category: {{ tutor.category }}</span> |
+                <span>Posted: {{ tutor.date|date:"M d, Y" }}</span>
+            </div>
+            <div class="card-text ck-content">
+                {{ tutor.description|safe }}
+            </div>
+            <div class="mt-3">
+                <h5>Tags:</h5>
+                {% for tag in tutor.tags.all %}
+                <a href="{% url 'tutors-tags' tag.slug %}" class="badge bg-secondary">{{ tag }}</a>
+                {% empty %}
+                <span class="text-muted">No tags</span>
+                {% endfor %}
+                <hr>
+                <div>
+                {% if tutor.author == request.user %}
+                <span class="badge"><a class="text-wrap" href="{% url 'tutor-update' tutor.pk %}">Edit</a></span>
+                <span class="badge bg-secondary"><a class="text-reset" href="{% url 'tutor-delete' tutor.pk %}">Delete</a></span>
+                {% endif %}
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    window.addEventListener('resize', function() {
+        // Assuming you have only one editor instance
+        const editorInstance = Object.values(CKEDITOR.instances)[0];
+        if (editorInstance) {
+            editorInstance.container.setStyle('width', '100%');
+        }
+    });
+</script>    
+{% endblock content %}

@@ -51,14 +51,15 @@
             <div class="vote-section">
                 <div class="vote-buttons mb-4">
                     
-                    <button id="upvote-btn" class="btn btn-light btn-sm" data-upvoted="{{ is_upvoted }}">
-                        {% if is_upvoted %}
+                    
+                    <button class="topic-upvote-btn btn btn-light btn-sm" data-url="{% url 'upvote-topic' topic.id %}">
+                        {% if topic.is_upvoted %}
                             <i class="bi bi-hand-thumbs-up-fill"></i>
                         {% else %}
                             <i class="bi bi-hand-thumbs-up"></i>
                         {% endif %}
                     </button>
-                    <span id="upvote-count">{{ upvotes }}</span>
+                    <span class="topic-upvote-count">{{ topic.upvotes }}</span>
                     
 
                 </div>
@@ -80,74 +81,113 @@
     </div>
     <h5>Answers</h5>
     {% for answer in answers %}
-        <div class="answer">
-            <p>{{ answer.answer_body }}</p>
-            <p class="fst-italic">By 
-                <a href="{% url 'profile' answer.answer_author.username %}">{{ answer.answer_author }}</a> 
-                <small class="">{{ answer.answer_pub_date|timesince }} ago</small>
-            </p>
-            {% if answer.answer_author == request.user %}
-                <a href="{% url 'answer-update' answer.id %}">Edit</a>
-                <small>
-                    <a href="{% url 'answer-delete' answer.id %}">Delete</a>
-                </small>
-            {% endif %}
-        </div>
-        <div class="vote-section">
-            <div class="vote-buttons">
-                <a href="{% url 'upvote-answer' answer.id %}" class="btn btn-light btn-sm">
+<div class="answer">
+    <p>{{ answer.answer_body }}</p>
+    <p class="fst-italic">By 
+        <a href="{% url 'profile' answer.answer_author.username %}">{{ answer.answer_author }}</a> 
+        <small class="">{{ answer.answer_pub_date|timesince }} ago</small>
+    </p>
+    {% if answer.answer_author == request.user %}
+        <a href="{% url 'answer-update' answer.id %}">Edit</a>
+        <small>
+            <a href="{% url 'answer-delete' answer.id %}">Delete</a>
+        </small>
+    {% endif %}
+    
+    <div class="vote-section">
+        <div class="vote-buttons mb-4" data-answer-id="{{ answer.id }}">
+            <button class="answer-upvote-btn btn btn-light btn-sm" data-url="{% url 'upvote-answer' answer.id %}">
+                {% if answer.is_upvoted %}
+                    <i class="bi bi-hand-thumbs-up-fill"></i>
+                {% else %}
                     <i class="bi bi-hand-thumbs-up"></i>
-                </a>
-                
-                    <span class="vote-count">{{ answer.upvotes|default:0 }}</span>
-                    <a href="{% url 'downvote-answer' answer.id %}" class="btn btn-light btn-sm">
-                        <i class="bi bi-hand-thumbs-down"></i>
-                    </a>
-                    <span class="vote-count">{{ answer.downvotes }}</span>
-                
-                </div>
+                {% endif %}
+            </button>
+            <span class="answer-upvote-count">{{ answer.gains }}</span>
         </div>
-        <hr>
-    {% endfor %}
+    </div>
+    <hr>
+{% endfor %}
+
     
 
     
     
 </div>
 <script>
-    document.getElementById('upvote-btn').addEventListener('click', function() {
-        fetch("{% url 'upvote-topic' topic.id %}", {
-            method: 'POST',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRFToken': '{{ csrf_token }}'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            updateCountsAndButtons(data);
-        })
-        .catch(error => console.error('Error:', error));
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.topic-upvote-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const url = this.getAttribute('data-url');
+            const upvoteCountSpan = this.nextElementSibling; // Adjust this if the layout changes
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    upvoteCountSpan.textContent = data.upvotes;
+                    this.children[0].className = data.upvoted ? 'bi bi-hand-thumbs-up-fill' : 'bi bi-hand-thumbs-up';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
     });
-    
-    function updateCountsAndButtons(data) {
-        const upvotes = data.upvotes || 0;
-        
-        document.getElementById('upvote-count').textContent = upvotes;
-        updateVoteButton(data.upvoted);
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
-    
-    function updateVoteButton(upvoted) {
-        var upvoteBtn = document.getElementById('upvote-btn');
-        upvoteBtn.children[0].className = upvoted ? 'bi bi-hand-thumbs-up' : 'bi bi-hand-thumbs-up-fill';
-    }
-    
-    
-    
-    
-    
+});
+
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.answer-upvote-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const url = this.getAttribute('data-url');
+                const upvoteCountSpan = this.nextElementSibling; // Assumes the span immediately follows the button
+    
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        upvoteCountSpan.textContent = data.answer_upvotes;
+                        this.children[0].className = data.answer_upvoted ? 'bi bi-hand-thumbs-up-fill' : 'bi bi-hand-thumbs-up';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    });
+    
+</script>
 
 
 {% endblock content %}

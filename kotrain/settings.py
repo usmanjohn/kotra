@@ -41,8 +41,10 @@ INSTALLED_APPS = [
     'users',
     'book',
     'podcasts',
+    'tutor',
     'crispy_forms',
-    'crispy_bootstrap4',
+    'crispy_bootstrap4',    
+    
     
     'taggit',
     'django_ckeditor_5',
@@ -134,6 +136,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 import os
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'topics/static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
@@ -152,6 +155,10 @@ LOGIN_URL = 'login'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+
+
+CKEDITOR_BASEPATH = "/topics/static/ckeditor/ckeditor/"
+CKEDITOR_UPLOAD_PATH = "media/"
 
 customColorPalette = [
         {
@@ -181,13 +188,16 @@ customColorPalette = [
     ]
 
 
+  
+  
 CKEDITOR_5_CONFIGS = {
     'default': {
         'toolbar': ['heading', '|', 'bold', 'italic', 'link',
                     'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
+                    'width': '100%'
 
     },
-    'extends': {
+    'extends': {'width': '100%',
         'blockToolbar': [
             'paragraph', 'heading1', 'heading2', 'heading3',
             '|',
@@ -200,6 +210,7 @@ CKEDITOR_5_CONFIGS = {
                     'bulletedList', 'numberedList', 'todoList', '|',  'blockQuote', 'imageUpload', '|',
                     'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'mediaEmbed', 'removeFormat',
                     'insertTable',],
+                    
         'image': {
             'toolbar': ['imageTextAlternative', '|', 'imageStyle:alignLeft',
                         'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:side',  '|'],
@@ -231,13 +242,22 @@ CKEDITOR_5_CONFIGS = {
                 { 'model': 'heading2', 'view': 'h2', 'title': 'Heading 2', 'class': 'ck-heading_heading2' },
                 { 'model': 'heading3', 'view': 'h3', 'title': 'Heading 3', 'class': 'ck-heading_heading3' }
             ]
-        }
+        },
+        'width': 'auto'
     },
     'list': {
         'properties': {
             'styles': 'true',
             'startIndex': 'true',
             'reversed': 'true',
-        }
+        },'width': 'auto',
     }
 }
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.core.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.request",
+)

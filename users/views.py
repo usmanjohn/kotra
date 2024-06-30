@@ -51,13 +51,14 @@ def loginUser(request):
             user = authenticate(request, username = username, password = password)
             if user is not None:
                 login(request, user)
-                return redirect('home')
+                next_url = request.GET.get('next', '/')  # Default redirect to home if 'next' isn't provided
+                return redirect(next_url)
+                
             else:
                 form.add_error(None, 'Invalid username or Password')
     else:
         form = AuthenticationForm()
     return render(request, 'users/login.html', {'form':form})
-
 
 @login_required
 def LogOut(request):

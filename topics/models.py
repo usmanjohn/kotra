@@ -5,6 +5,7 @@ from django_ckeditor_5.fields import CKEditor5Field
 from taggit.managers import TaggableManager
 from django.db.models import Count, Q
 
+
 # Create your models here.
 class Topic(models.Model):
     Category_CHOICES = (
@@ -21,7 +22,7 @@ class Topic(models.Model):
     topic_hashtag = models.CharField(max_length=50)
     topic_category = models.CharField(choices=Category_CHOICES, default='Topik', max_length=15)
     topic_pub_date = models.DateField(auto_now_add=True)
-    
+    additional_text = CKEditor5Field('Additional',config_name='extends', blank = True, null = True, default = 'none')
     def __str__(self) -> str:
         return self.topic_title
     

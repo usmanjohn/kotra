@@ -1,24 +1,29 @@
 {% extends "topics/base.html" %}
 
 {% block content %}
-
 <div class="container mt-4">
-    
-    <div class="col-12 mb-1">
-        <div class="btn-group" role="group" aria-label="Basic example">
-            <a href="{% url 'topic-create' %}" class="btn btn-outline-primary">
-                <i class="bi bi-plus-circle"></i> Create
-            </a>
-            <a href="" class="btn btn-outline-secondary">
-                <i class="bi bi-funnel"></i> Filter
-            </a>
-            <a href="" class="btn btn-outline-success">
-                <i class="bi bi-search"></i> Search
-            </a>
-        </div>    
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-end mb-2">
+                <!-- Button group for actions -->
+                <div class="btn-group me-2" role="group" aria-label="Action Buttons">
+                    <a href="{% url 'topic-create' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-plus-circle"></i> Create
+                    </a>
+                    <a href="" class="btn btn-outline-secondary">
+                        <i class="bi bi-funnel"></i> Filter
+                    </a>
+                </div>
+                <!-- Search form -->
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
-       
         {% for topic in topics %}
         <div class="col-md-6 mb-3 mt-2">
             <div class="card h-100">
@@ -32,47 +37,34 @@
                         </a>
                         <a href="{% url 'profile' topic.topic_author.username %}">
                             {{ topic.topic_author.username }}
-                         </a>
+                        </a>
                     </div>
-                
                     <div class="col-md-9">
-                     
                         <div class="card-body">
-                            
-
                             <h5 class="card-title">
                                 <a href="{% url 'topic-detail' topic.id %}">{{ topic.topic_title }}</a>
                             </h5> 
-                            <p class="card-text" 
-                            style="max-height: 3em;
-                                    overflow: hidden; 
-                                    display: -webkit-box;
-                                    -webkit-line-clamp: 2; 
-                                    line-clamp: 2; 
-                                    -webkit-box-orient: vertical;">{{ topic.topic_body }}</p>
-                                <a href="{% url 'tagged-topics' topic.topic_hashtag %}">
-                                <p class="card-text"><span class="badge bg-secondary">#{{ topic.topic_hashtag }}</span></p>                           
+                            <p class="card-text" style="max-height: 3em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical;">
+                                {{ topic.topic_body }}
+                            </p>
+                            <a href="{% url 'tagged-topics' topic.topic_hashtag %}">
+                                <p class="card-text"><span class="badge bg-secondary">#{{ topic.topic_hashtag }}</span></p>
                             </a>
-                                <p class="card-text">
-                                
+                            <p class="card-text">
                                 <small class="text-muted">{{ topic.topic_pub_date|timesince }}</small>
                             </p>
                             <p class="card-text">
                                 <i class="bi bi-hand-thumbs-up"></i> {{ topic.upvotes }}
-                                
                             </p>
-                        
                         </div>
-                    
-                   
                     </div>
-            
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
 </div>
+
 
 <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">

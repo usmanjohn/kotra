@@ -31,12 +31,19 @@ urlpatterns = [
     path('topic/<int:topic_id>/upvote/', views.upvote_topic, name='upvote-topic'),
     
     path('answer/<int:answer_id>/upvote/', views.upvote_answer, name='upvote-answer'),
-    path('answer/<int:answer_id>/downvote/', views.downvote_answer, name='downvote-answer'),
+   
     path('unauthorized-vote/', views.unauthorized_vote, name='unauthorized-vote'),
 
     path('tagged/<tag>/', views.tag_list, name='tagged-topics'),
 
-    path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico'))
+    path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
+
+    
+    path('search/', views.search_results, name='search_results'),
+    
+    # Add other URLs as needed
+
+
 ]
 
 

@@ -1,0 +1,95 @@
+{% extends "topics/base.html" %}
+
+{% block content %}
+<style>
+    .full-height-row {
+        height: 40vh; /* 40% of the viewport height */
+        overflow-y: auto; /* Enables scrolling if content overflows */
+    }
+    .narrow-row {
+        height: 20vh; /* 20% of the viewport height */
+        overflow-y: auto; /* Enables scrolling if content overflows */
+    }
+</style>
+
+<h3>Search Results for '{{ query }}'</h3>
+
+<div class="container-fluid" style="height: 100vh;"> <!-- Make the container full viewport height -->
+    <div class="row full-height-row">
+        <div class="col-md-4">
+            <h4>Topics</h4>
+            <div class="result-container">
+                {% for topic in topic_results %}
+                <p><a href="#">{{ topic.topic_title }}</a></p>
+                {% empty %}
+                <p>No topics found.</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h4>Books</h4>
+            <div class="result-container">
+                {% for book in book_results %}
+                <p><a href="#">{{ book.title }}</a></p>
+                {% empty %}
+                <p>No books found.</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h4>Tutorials</h4>
+            <div class="result-container">
+                {% for tutorial in tutorial_results %}
+                <p><a href="#">{{ tutorial.title }}</a></p>
+                {% empty %}
+                <p>No tutorials found.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="row full-height-row">
+        <div class="col-md-4">
+            <h4>Podcasts</h4>
+            <div class="result-container">
+                {% for podcast in podcast_results %}
+                <p><a href="#">{{ podcast.title }}</a></p>
+                {% empty %}
+                <p>No podcasts found.</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h4>Tests</h4>
+            <div class="result-container">
+                {% for test in test_results %}
+                <p><a href="#">{{ test.name }}</a></p>
+                {% empty %}
+                <p>No tests found.</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h4>Jobs</h4>
+            <div class="result-container">
+                {% for job in job_results %}
+                <p><a href="#">{{ job.job_title }}</a></p>
+                {% empty %}
+                <p>No jobs found.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="row narrow-row">
+        <div class="col-12">
+            <h4>Users</h4>
+            <div class="result-container">
+                {% for user in user_results %}
+                <p><a href="#">{{ user.username }}</a></p>
+                {% empty %}
+                <p>No users found.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
