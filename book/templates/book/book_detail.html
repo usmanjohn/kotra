@@ -1,5 +1,6 @@
 {% extends "topics/base.html" %}
 {% block content %}
+{% load crispy_forms_tags %}
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-4">
@@ -37,7 +38,40 @@
                 <a href="{% url 'book-delete' book.id %}" class="btn btn-warning btn-sm">Delete</a>
             </div>
             {% endif %}
+            <hr>
+            
+                
+                
         </div>
+        <h4>Reviews</h4>
+        <h5 class = 'text-warning'>{{ book.avg_rating }}</h5>
+        <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapsereview" aria-expanded="false" aria-controls="collapseExample">
+            Add Review
+          </button>
+        <div class="collapse" id="collapsereview">
+            {% if user.is_authenticated %}
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">Submit Review</button>
+                </form>
+                {% else %}
+                <a href="{% url 'login' %}?next={% firstof request.path '/' %}" class="btn btn-outline-primary me-2">Login to review</a>
+                {% endif %}
+        </div>
+        
+    {% for review in book.review.all %}
+            <div class="mb-3">
+                <strong>{{ review.reviewer.username }}</strong>
+                <span class="text-muted">{{ review.date|date:"M d, Y" }}</span>
+                <div>
+                    Rating: {% include "book/stars.html" with rating=review.rating %}
+                </div>
+                <p>Review: {{ review.review }}</p>
+            </div>
+        {% empty %}
+            <p>No reviews yet.</p>
+        {% endfor %}
     </div>
 </div>
 {% endblock content %}

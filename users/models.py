@@ -2,8 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from topics.models import Topic, Answer, Upvoter, UpvoterAnswer
 from django.db.models import Count, Q
-
-
+ 
+from django.utils import timezone
     
 
 
@@ -18,6 +18,7 @@ class UserProfile(models.Model):
     youtube_url = models.URLField(blank=True, null=True, default='#')
     other_url = models.URLField(blank=True, null=True, default='#')
     link_image = models.ImageField(upload_to='links', default='links/personal_profile.png')
+    date = models.DateField(auto_now_add=True)
     
 
     def __str__(self) -> str:
@@ -45,13 +46,13 @@ class UserProfile(models.Model):
             badge = 'Observer'
         if gains > 0 and gains < 10:
             badge = 'Passenger'
-        if gains >= 10 and gains <50:
+        if gains >= 10 and gains <30:
             badge = 'Conductor'
         
-        if gains >= 50 and gains <200:
+        if gains >= 30 and gains <50:
             badge = 'Influencer'
         
-        if gains >= 200:
+        if gains >= 50:
             badge = 'Driver'
         return badge
          

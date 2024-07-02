@@ -34,9 +34,11 @@
                         <li><strong>Pages:</strong> {{ book.num_of_pages }}</li>
                         <li><strong>Publication Year:</strong> {{ book.pub_year }}</li>
                         <li><strong>Category:</strong> {{ book.category }}</li>
+                        <li><strong>Rating:</strong> <span class = 'text-warning'>{{ book.avg_rating }}</span></li>
                     </ul>
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="text-success font-weight-bold">${{ book.prize }}</h6>
+                        
                         <div class="btn-group">
 
                             <form action="{% url 'add-to-cart' book.id %}" method="post">
@@ -47,6 +49,7 @@
                             <a href="{% url 'book-detail' book.id %}"><button class="btn btn-secondary btn-sm">View Details</button></a>
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>

@@ -7,7 +7,7 @@
             <div class="d-flex justify-content-end mb-2">
                 <!-- Button group for actions -->
                 <div class="btn-group me-2" role="group" aria-label="Action Buttons">
-                    <a href="{% url 'topic-create' %}" class="btn btn-outline-primary">
+                    <a href="{% url 'topic-create' %}" class="btn btn-outline-primary ">
                         <i class="bi bi-plus-circle"></i> Create
                     </a>
                     <a href="" class="btn btn-outline-secondary">
@@ -47,9 +47,11 @@
                             <p class="card-text" style="max-height: 3em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical;">
                                 {{ topic.topic_body }}
                             </p>
-                            <a href="{% url 'tagged-topics' topic.topic_hashtag %}">
-                                <p class="card-text"><span class="badge bg-secondary">#{{ topic.topic_hashtag }}</span></p>
+                            {% for tag in topic.hashtag.all %}
+                            <a href="{% url 'tagged-topics' tag.slug %}">
+                                <small class="badge bg-secondary">#{{ tag }}</small>
                             </a>
+                            {% endfor %}
                             <p class="card-text">
                                 <small class="text-muted">{{ topic.topic_pub_date|timesince }}</small>
                             </p>

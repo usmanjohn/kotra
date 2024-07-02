@@ -19,10 +19,8 @@ class Topic(models.Model):
     topic_title = models.CharField(max_length=150)
     topic_body = CKEditor5Field('Text', config_name='extends')
     hashtag = TaggableManager(blank=True)
-    topic_hashtag = models.CharField(max_length=50)
     topic_category = models.CharField(choices=Category_CHOICES, default='Topik', max_length=15)
     topic_pub_date = models.DateField(auto_now_add=True)
-    additional_text = CKEditor5Field('Additional',config_name='extends', blank = True, null = True, default = 'none')
     def __str__(self) -> str:
         return self.topic_title
     
@@ -30,7 +28,7 @@ class Topic(models.Model):
         # This property will return the count of upvotes for this particular topic instance
         return Upvoter.objects.filter(topic=self, vote_type=1).count()
 
-   
+    
 class SavedTopic(models.Model): 
     user = models.ForeignKey(User, related_name='saved_topics', on_delete=models.CASCADE)
     topic = models.ForeignKey(Topic, related_name='saved_by_users', on_delete=models.CASCADE)

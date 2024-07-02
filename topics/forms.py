@@ -7,12 +7,12 @@ from django_ckeditor_5.widgets import CKEditor5Widget
 
 class TopicForm(forms.ModelForm):
       """Form for comments to the article."""
-      additional_text = forms.CharField(widget=CKEditor5Widget(config_name='extends'))   
+       
       topic_body = forms.CharField(widget=CKEditor5Widget(config_name='extends'))
 
       class Meta:
           model = Topic
-          fields = ['topic_category', 'topic_title', 'topic_body', 'topic_hashtag', 'hashtag', 'additional_text']
+          fields = ['topic_category', 'topic_title', 'topic_body',  'hashtag']
           
 
 class AnswerForm(ModelForm):

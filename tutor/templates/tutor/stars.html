@@ -1,0 +1,7 @@
+{% for i in "12345"|make_list %}
+    {% if i|add:"0" <= rating %}
+        <span class="text-warning">★</span>
+    {% else %}
+        <span class="text-muted">☆</span>
+    {% endif %}
+{% endfor %}

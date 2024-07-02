@@ -3,7 +3,16 @@ from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
 import datetime
 from django.utils import timezone
-from django_ckeditor_5.fields import CKEditor5Field
+from django_ckeditor_5.fields import CKEditor5Field 
+
+Rating = (
+    (1, '★☆☆☆☆'),
+    (2, '★★☆☆☆'),
+    (3, '★★★☆☆'),
+    (4, '★★★★☆'),
+    (5, '★★★★★')
+    
+)
 
 # Create your models here.
 class Tutoring(models.Model):
@@ -17,6 +26,23 @@ class Tutoring(models.Model):
     category = models.CharField(choices= category_choice, default='topik', max_length=20)
     date = models.DateField(auto_now_add=True)    
     tags = TaggableManager(blank=True)
+
+
+
+    def __str__(self) -> str:
+        return self.title
+class Review(models.Model):
+    reviewer = models.ForeignKey(User, related_name='tutor_review', on_delete= models.CASCADE)
+    tutorial = models.ForeignKey(Tutoring, related_name = 'reviews', on_delete=models.CASCADE)
+    review = models.TextField(blank = True, null=True)
+    rating = models.IntegerField(choices=Rating, default=None)
+    date = models.DateField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return self.tutorial.title
+    def get_rating(self):
+        return self.rating
+    
 
     
 

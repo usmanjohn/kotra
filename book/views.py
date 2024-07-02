@@ -1,8 +1,8 @@
 from typing import Any
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
-from .models import Book, BookCartItem, BookCategory, BookCart, BookOrder
+from .models import Book, BookCartItem, BookCategory, BookCart, BookOrder, BookRating
 from django.views.generic import ListView, DeleteView, DetailView, UpdateView
-from .forms import BookForm
+from .forms import BookForm, ReviewForm
 
 from django.contrib import messages
 
@@ -45,6 +45,21 @@ def booklist(request):
 
 def bookdetail(request, pk):
     book = get_object_or_404(Book, id=pk)
+    user_reviews = BookRating.objects.filter(book=book).order_by('-date')
+    if request.method == 'POST' and request.user.is_authenticated:
+        user_review = user_reviews.filter(reviewer=request.user).first()
+        
+        form = ReviewForm(request.POST, instance=user_review)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.book = book
+            review.reviewer = request.user
+            review.save()
+            messages.success(request, 'Your review has been submitted.')
+            return redirect('book-detail', pk=pk)
+    else:
+        form = ReviewForm()
+
     is_in_cart = False
     if book.prize == None:
         book.prize = 0
@@ -52,7 +67,7 @@ def bookdetail(request, pk):
         cart = BookCart.objects.filter(user=request.user).first()
         if cart and BookCartItem.objects.filter(cart=cart, book=book).exists():
             is_in_cart = True
-    context = {'book': book, 'is_in_cart': is_in_cart}
+    context = {'book': book, 'is_in_cart': is_in_cart, 'user_review':user_reviews, 'form':form}
     return render(request, 'book/book_detail.html', context)
 
 def bookdelete(request, pk):

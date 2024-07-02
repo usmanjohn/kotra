@@ -212,6 +212,7 @@ def createTopic(request):
             topic = form.save(commit=False)
             topic.topic_author = request.user
             topic.save() 
+            form.save_m2m()
             messages.success(request, 'Topic created successfully')
             return redirect('/')
     else:
@@ -260,7 +261,7 @@ def deleteTopic(request, pk):
 @login_required
 def deleteAnswer(request, pk):
     answer = get_object_or_404(Answer, pk = pk, answer_author = request.user)
-    alfa = answer.topic_parent
+    alfa = answer.topic_parent 
     if request.method == 'POST':
         answer.delete()
         
@@ -270,23 +271,17 @@ def deleteAnswer(request, pk):
     context = {'topic':answer}
     return render(request, 'topics/answer_delete.html', context)
 
-
-
-#def upvote_answer(request, answer_id):
-#    answer = get_object_or_404(Answer, id=answer_id)
-#    user = request.user
-#    vote, created = UpvoterAnswer.objects.get_or_create(user=user, answer=answer, defaults={'vote_type':1})
-#    if not created and vote.vote_type != 1:
-#        vote.vote_type = 1
-#        vote.save()   
-#    return redirect('topic-detail', pk=answer.topic_parent.id)
-
 def unauthorized_vote(request):
     
     return redirect('login')
 
-def tag_list(request, tag):
-    topics = Topic.objects.filter(topic_hashtag__in = [tag])
-    context = {'topics':topics}
+
+def topic_tag_list(request, tag_slug = None):
+    topics = Topic.objects.all().order_by('-topic_pub_date', 'topic_title')
+
+    tag = None
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug = tag_slug)
+        topic = topics.filter(hashtag__in = [tag])
+    context = {'topics':topic}
     return render(request, 'topics/tags.html', context)
-    

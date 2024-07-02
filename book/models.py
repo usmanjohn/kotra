@@ -2,6 +2,17 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 import random
+from django.utils import timezone
+from django.db.models import Avg
+
+Rating = (
+    (1, '★☆☆☆☆'),
+    (2, '★★☆☆☆'),
+    (3, '★★★☆☆'),
+    (4, '★★★★☆'),
+    (5, '★★★★★')
+    
+)
 class BookCategory(models.Model):
     name = models.CharField(max_length=30)
     description = models.CharField(max_length=150, blank=True, null=True)
@@ -24,10 +35,18 @@ class Book(models.Model):
     pub_year = models.IntegerField(choices=YEAR_CHOICES, default=datetime.datetime.now().year)
     category = models.ForeignKey(BookCategory, on_delete=models.CASCADE, null=True, blank=True)
     prize = models.FloatField(blank=True, null=True)
+    date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.title
-
+    
+    @property
+    def avg_rating(self):
+        rating = self.review.aggregate(models.Avg('rating'))['rating__avg']
+        if rating is not None:
+            rounded_rating = round(rating)
+            return dict(Rating).get(rounded_rating, '☆☆☆☆☆')
+        return '☆☆☆☆☆'
 class BookCart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -49,3 +68,16 @@ class BookOrder(models.Model):
 
     def __str__(self):
         return f"Order #{self.id} - {self.cart.user.username}"
+    
+class BookRating(models.Model):
+    reviewer = models.ForeignKey(User, related_name='book_review', on_delete= models.CASCADE)
+    book = models.ForeignKey(Book, related_name = 'review', on_delete=models.CASCADE)
+    review = models.TextField(blank = True, null=True)
+    rating = models.IntegerField(choices=Rating, default=None)
+    date = models.DateField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return self.book.title
+    def get_rating(self): 
+        return self.rating
+   

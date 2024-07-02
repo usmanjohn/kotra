@@ -34,7 +34,7 @@ urlpatterns = [
    
     path('unauthorized-vote/', views.unauthorized_vote, name='unauthorized-vote'),
 
-    path('tagged/<tag>/', views.tag_list, name='tagged-topics'),
+    path('tagged/<slug:tag_slug>/', views.topic_tag_list, name='tagged-topics'),
 
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
 

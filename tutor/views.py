@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Tutoring
-from .forms import TutoringForm
+from .models import Tutoring, Review
+from .forms import TutoringForm, ReviewForm
 # Create your views here.
 from taggit.models import Tag
 from django.contrib.auth.decorators import login_required
@@ -23,9 +23,32 @@ def tutors_list(request):
 
 
 def tutors_detail(request, pk):
-    tutor = get_object_or_404(Tutoring, id = pk)
-    context = {'tutor':tutor}
+    tutorial = get_object_or_404(Tutoring, id=pk)
+    user_reviews = Review.objects.filter(tutorial=tutorial).order_by('-date')
+    if request.method == 'POST' and request.user.is_authenticated:
+        user_review = user_reviews.filter(reviewer=request.user).first()
+
+        form = ReviewForm(request.POST, instance=user_review)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.tutorial = tutorial
+            review.reviewer = request.user
+            review.save()
+            messages.success(request, 'Your review has been submitted.')
+            return redirect('tutor-detail', pk=pk)
+    else:
+        form = ReviewForm()
+
+    context = {
+        'tutor': tutorial,
+        'form': form,
+        'user_review': user_reviews,
+        
+    }
     return render(request, 'tutor/tutor_detail.html', context)
+
+
+
 @login_required
 def tutors_create(request):
     print("Method:", request.method)  # Check the method
@@ -37,6 +60,7 @@ def tutors_create(request):
             form = forms.save(commit=False)
             form.author = request.user  # Manually assign the author
             form.save()
+            forms.save_m2m()
             messages.success(request, 'Tutorial created successfully and in Review')
             return redirect('tutors-list')
         else:

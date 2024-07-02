@@ -170,8 +170,20 @@
                 <div class="col-md-4">
                     <div class="card-body">
                         <h4>{{ profile_user.username }}</h4>
-                        <p><span class="badge bg-success">Gains: {{ profile_user.userprofile.total_gains }}</span></p>
-                        <p><span class="badge bg-info">Role: {{ profile_user.userprofile.badge_status }}</span></p>
+                        <p><span class="badge bg-success">Gains: {{ profile_user.userprofile.total_gains }}</span>
+                        {% if profile_user.userprofile.badge_status == 'Passenger' %}
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top" class="btn btn-info mt-auto">{{ profile_user.userprofile.badge_status }}</span>
+                        {% elif profile_user.userprofile.badge_status == 'Conductor'%}
+                        <span class="btn btn-dark mt-auto">{{ profile_user.userprofile.badge_status }}</span>
+                        {% elif profile_user.userprofile.badge_status == 'Influencer'%}
+                        <span class="btn btn-danger mt-auto">{{ profile_user.userprofile.badge_status }}</span>
+                        {% elif profile_user.userprofile.badge_status == 'Driver'%}
+                        <span class="btn btn-success mt-auto">{{ profile_user.userprofile.badge_status }}</span>
+                        {% elif profile_user.userprofile.badge_status == 'Observer'%}
+                        <span class="btn btn-warning mt-auto">{{ profile_user.userprofile.badge_status }}</span>
+                        {% endif %}
+                    </p>
+
                         <p>{{ profile_user.email }}</p>
                         <p>{{ profile_user.userprofile.bio }}</p>
                         {% if is_own_profile %}

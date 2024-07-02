@@ -18,7 +18,18 @@
         {% for obj in object_list %}
         <div class="col-md-4 mb-4">
             <div class="card h-100">
-                <span class="btn btn-info mt-auto">{{ obj.userprofile.badge_status }}</span>
+                {% if obj.userprofile.badge_status == 'Passenger' %}
+                <span data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top" class="btn btn-info mt-auto">{{ obj.userprofile.badge_status }}</span>
+                {% elif obj.userprofile.badge_status == 'Conductor'%}
+                <span class="btn btn-dark mt-auto">{{ obj.userprofile.badge_status }}</span>
+                {% elif obj.userprofile.badge_status == 'Influencer'%}
+                <span class="btn btn-danger mt-auto">{{ obj.userprofile.badge_status }}</span>
+                {% elif obj.userprofile.badge_status == 'Driver'%}
+                <span class="btn btn-success mt-auto">{{ obj.userprofile.badge_status }}</span>
+                {% elif obj.userprofile.badge_status == 'Observer'%}
+                <span class="btn btn-warning mt-auto">{{ obj.userprofile.badge_status }}</span>
+                
+                {% endif %}
                 <div class="card-body text-center">
 
                     <img src="{{ obj.userprofile.image.url }}" alt="{{ obj.username }}'s profile picture" 

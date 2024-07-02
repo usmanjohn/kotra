@@ -18,4 +18,5 @@ urlpatterns = [
     path('delete/<pk>', views.tutor_delete, name = 'tutor-delete'),
     
     
+    
 ]
