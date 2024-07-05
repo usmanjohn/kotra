@@ -1,0 +1,1 @@
+web gunicorn kotrain.wsgi:application --log-file -
