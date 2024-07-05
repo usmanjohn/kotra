@@ -105,15 +105,11 @@ WSGI_APPLICATION = 'kotrain.wsgi.application'
 #        'NAME': BASE_DIR / 'db.sqlite3',
 #    }
 #}
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'kotrain',
-        'USER': os.environ.get('user_db'),
-        'PASSWORD': os.environ.get('password_db'),
-        'HOST': 'localhost',  # Or use the IP if your database is on another server
-        'PORT': '5432',  # Default port for PostgreSQL
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL')
+    )
 }
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 11240 # higher than the count of fields
