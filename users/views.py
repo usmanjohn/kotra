@@ -216,20 +216,21 @@ def verify_email(request, uidb64, token):
 class UsersList(ListView):
     model = User
     paginate_by = 9
+    ordering = ['username']
     template_name = 'users/users_list.html'
     context_object_name = 'users'
 
     def get_queryset(self):
         query = self.request.GET.get('q')
 
-        queryset = User.objects.all().select_related('userprofile')
+        queryset = User.objects.all().select_related('userprofile').order_by('username')
 
         if query:
             queryset = queryset.filter(
                 Q(username__icontains=query) |
                 Q(email__icontains=query) |
                 Q(userprofile__bio__icontains=query)
-            )
+            ).order_by('username')
 
         
 

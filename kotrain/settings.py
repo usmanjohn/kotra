@@ -109,8 +109,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'kotrain',
-        'USER': 'postgres',
-        'PASSWORD': 'Alfabet02!!',
+        'USER': os.environ.get('user_db'),
+        'PASSWORD': os.environ.get('password_db'),
         'HOST': 'localhost',  # Or use the IP if your database is on another server
         'PORT': '5432',  # Default port for PostgreSQL
     }
@@ -166,8 +166,8 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True  
 EMAIL_HOST = 'smtp.gmail.com'  
-EMAIL_HOST_USER = 'backpacker0220@gmail.com'  
-EMAIL_HOST_PASSWORD = 'xibu qphm drnm arey'  
+EMAIL_HOST_USER = os.environ.get('email_settings')  
+EMAIL_HOST_PASSWORD = os.environ.get('password_settings')  
 EMAIL_PORT = 587  
 
 # Default primary key field type
