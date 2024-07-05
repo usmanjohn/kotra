@@ -20,15 +20,23 @@ class Topic(models.Model):
     topic_body = CKEditor5Field('Text', config_name='extends')
     hashtag = TaggableManager(blank=True)
     topic_category = models.CharField(choices=Category_CHOICES, default='Topik', max_length=15)
-    topic_pub_date = models.DateField(auto_now_add=True)
+    topic_pub_date = models.DateTimeField(auto_now_add=True)
     def __str__(self) -> str:
-        return self.topic_title
+        return self.topic_title 
     
     def upvotes(self):
         # This property will return the count of upvotes for this particular topic instance
         return Upvoter.objects.filter(topic=self, vote_type=1).count()
 
-    
+    def save(self, *args, **kwargs):
+        # Call the original save method
+        super().save(*args, **kwargs)
+        
+        # Check if there are any tags
+        if not self.hashtag.all().exists():
+            # If no tags, add a default tag
+            self.hashtag.add('general') 
+
 class SavedTopic(models.Model): 
     user = models.ForeignKey(User, related_name='saved_topics', on_delete=models.CASCADE)
     topic = models.ForeignKey(Topic, related_name='saved_by_users', on_delete=models.CASCADE)

@@ -8,6 +8,15 @@
         <div class="container mt-4">
             <div class="card">
                 <div class="card-body">
+                    {% if is_saved %}
+                        <a href="{% url 'unsave-tutorial' tutor.pk %}" >
+                            <i class="bi bi-bookmark-check-fill"></i> 
+                        </a>
+                    {% else %}
+                        <a href="{% url 'save-tutorial' tutor.pk %}">
+                            <i class="bi bi-bookmark-check"></i>
+                        </a>
+                    {% endif %}
                     <h3 class="card-title">{{ tutor.title }}</h3>
                     <div class="card-subtitle mb-2 text-muted">
                         <span>Category: {{ tutor.category }}</span> |
@@ -39,6 +48,7 @@
             <div class="card">
                 <!-- ... (existing card content) ... -->
             </div>
+            <a class="btn btn-outline-primary" href="{% url 'saved-tutorials' %}">Go to saved</a>
         </div>
 
         <!-- Side menu for reviews -->
@@ -59,12 +69,12 @@
 
                 <hr>
 
-                {% for review in book.review.all %}
+                {% for review in tutor.reviews.all %}
                     <div class="mb-3">
                         <strong>{{ review.reviewer.username }}</strong>
                         <span class="text-muted">{{ review.date|date:"M d, Y" }}</span>
                         <div>
-                            Rating: {% include "book/stars.html" with rating=review.rating %}
+                            Rating: {% include "tutor/stars.html" with rating=review.rating %}
                         </div>
                         <p>{{ review.review }}</p>
                     </div>

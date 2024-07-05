@@ -1,15 +1,9 @@
-
-from django.contrib import admin
-from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
+from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('list/', views.podcast_list, name = 'podcast-list'),
-    path('detail/<pk>', views.podcast_detail, name = 'podcast-detail'),
-    path('save/<pk>', views.save_podcast, name = 'podcast-save'),
-    path('unsave/<pk>', views.unsave_podcast, name = 'podcast-unsave'),
-    path('saved/', views.saved_podcasts, name = 'podcast-saved'),
-    
+    path('list/', views.podcast_list, name='podcast-list'),
+    path('detail/<int:pk>/', views.podcast_detail, name='podcast-detail'),
+    path('toggle-save/<int:pk>/', views.toggle_save_podcast, name='podcast-toggle-save'),
+    path('saved/', views.saved_podcasts, name='podcast-saved'),
 ]

@@ -144,98 +144,127 @@
     .content-section {
         display: none;
     }
-    .social-media-icons img {
-        width: 40px; /* Adjusted width for mobile view */
-        height: 40px; /* Adjusted height for mobile view */
+    .social-media-icons .social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.social-media-icons .social-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+@media (max-width: 767.98px) {
+    .social-media-icons .social-btn {
+        font-size: 12px;
     }
 
-    /* Media query for smaller devices */
-    @media (max-width: 768px) {
-        .social-media-icons img {
-            width: 20px;
-            height: 20px;
-        }
+    .social-media-icons .social-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;
     }
+}
 </style>
     
 <div class="container mt-2">
-    <div class="container mt-2">
-        <div class="card mb-3">
+    <div class="container mt-4">
+        <div class="card mb-4 shadow">
             <div class="row g-0">
-                <div class="col-md-5">
-                    <div class="profile-image-container">
-                        <img src="{{ profile_user.userprofile.image.url }}" alt="{{ profile_user.username }}'s profile picture" class="profile-image img-fluid">
+                <div class="col-md-4">
+                    <div class="profile-image-container h-100 d-flex align-items-center justify-content-center p-3">
+                        <img src="{{ profile_user.userprofile.image.url }}" alt="{{ profile_user.username }}'s profile picture" class="profile-image img-fluid rounded-circle" style="width: 200px; height: 200px; object-fit: cover;">
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card-body">
-                        <h4>{{ profile_user.username }}</h4>
-                        <p><span class="badge bg-success">Gains: {{ profile_user.userprofile.total_gains }}</span>
-                        {% if profile_user.userprofile.badge_status == 'Passenger' %}
-                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top" class="btn btn-info mt-auto">{{ profile_user.userprofile.badge_status }}</span>
-                        {% elif profile_user.userprofile.badge_status == 'Conductor'%}
-                        <span class="btn btn-dark mt-auto">{{ profile_user.userprofile.badge_status }}</span>
-                        {% elif profile_user.userprofile.badge_status == 'Influencer'%}
-                        <span class="btn btn-danger mt-auto">{{ profile_user.userprofile.badge_status }}</span>
-                        {% elif profile_user.userprofile.badge_status == 'Driver'%}
-                        <span class="btn btn-success mt-auto">{{ profile_user.userprofile.badge_status }}</span>
-                        {% elif profile_user.userprofile.badge_status == 'Observer'%}
-                        <span class="btn btn-warning mt-auto">{{ profile_user.userprofile.badge_status }}</span>
-                        {% endif %}
-                    </p>
-
-                        <p>{{ profile_user.email }}</p>
-                        <p>{{ profile_user.userprofile.bio }}</p>
+                <div class="col-md-5">
+                    <div class="card-body h-100 d-flex flex-column justify-content-center">
+                        <h3 class="card-title mb-3">{{ profile_user.username }}</h3>
+                        <p class="card-text"><strong>Email:</strong> {{ profile_user.email }}</p>
+                        
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3">
+                                <span class="badge bg-primary rounded-pill p-2">
+                                    <i class="bi bi-trophy-fill me-1"></i> {{ profile_user.userprofile.total_gains }}
+                                </span>
+                            </div>
+                            {% if profile_user.userprofile.badge_status == 'Passenger' %}
+                                <span class="badge bg-info text-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Newcomer to the community">
+                                    <i class="bi bi-person-badge me-1"></i> {{ profile_user.userprofile.badge_status }}
+                                </span>
+                            {% elif profile_user.userprofile.badge_status == 'Conductor' %}
+                                <span class="badge bg-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Active community member">
+                                    <i class="bi bi-person-badge-fill me-1"></i> {{ profile_user.userprofile.badge_status }}
+                                </span>
+                            {% elif profile_user.userprofile.badge_status == 'Influencer' %}
+                                <span class="badge bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Highly influential member">
+                                    <i class="bi bi-person-stars me-1"></i> {{ profile_user.userprofile.badge_status }}
+                                </span>
+                            {% elif profile_user.userprofile.badge_status == 'Driver' %}
+                                <span class="badge bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Community leader">
+                                    <i class="bi bi-person-check-fill me-1"></i> {{ profile_user.userprofile.badge_status }}
+                                </span>
+                            {% elif profile_user.userprofile.badge_status == 'Observer' %}
+                                <span class="badge bg-warning text-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Quiet but attentive member">
+                                    <i class="bi bi-eye-fill me-1"></i> {{ profile_user.userprofile.badge_status }}
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <p class="card-text"><strong>Bio:</strong> {{ profile_user.userprofile.bio }}</p>
                         {% if is_own_profile %}
-                            <a href="{% url 'profile-update' profile_user.username %}"><span class="badge bg-secondary bg-gradient">Update Profile</span></a>
+                            <a href="{% url 'profile-update' profile_user.username %}" class="btn btn-outline-secondary btn-sm mt-2">Update Profile</a>
                         {% endif %}
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card-body social-media-icons">
-                        <ul class="list-inline">
-                            {% if user.userprofile.instagram_url %}
-                            <li class="list-inline-item">
-                                <a href="{{ user.userprofile.instagram_url }}" target="_blank">
-                                    <img src="{% static 'images/instagram.jpg' %}" alt="Instagram">
+                    <div class="card-body h-100 d-flex flex-column justify-content-center">
+                        <h5 class="card-title mb-3">Social Media Links</h5>
+                        
+                        <!-- Visible only on mobile -->
+                        <button class="btn btn-primary d-md-none w-100 mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#socialMediaCollapse" aria-expanded="false" aria-controls="socialMediaCollapse">
+                            Show Social Media
+                        </button>
+                
+                        <!-- Social media icons, collapsed on mobile -->
+                        <div class="collapse d-md-block" id="socialMediaCollapse">
+                            <div class="social-media-icons">
+                                {% if user.userprofile.instagram_url %}
+                                <a href="{{ user.userprofile.instagram_url }}" target="_blank" class="btn btn-outline-primary btn-sm social-btn mb-2">
+                                    <img src="{% static 'images/instagram.jpg' %}" alt="Instagram" class="social-icon"> Instagram
                                 </a>
-                            </li>
-                            {% endif %}
-                            {% if user.userprofile.facebook_url %}
-                            <li class="list-inline-item">
-                                <a href="{{ user.userprofile.facebook_url }}" target="_blank">
-                                    <img src="{% static 'images/facebook.jpg' %}" alt="Facebook">
+                                {% endif %}
+                                {% if user.userprofile.facebook_url %}
+                                <a href="{{ user.userprofile.facebook_url }}" target="_blank" class="btn btn-outline-primary btn-sm social-btn mb-2">
+                                    <img src="{% static 'images/facebook.jpg' %}" alt="Facebook" class="social-icon"> Facebook
                                 </a>
-                            </li>
-                            {% endif %}
-                            {% if user.userprofile.twitter_url %}
-                            <li class="list-inline-item">
-                                <a href="{{ user.userprofile.twitter_url }}" target="_blank">
-                                    <img src="{% static 'images/twitterr.png' %}" alt="Twitter">
+                                {% endif %}
+                                {% if user.userprofile.twitter_url %}
+                                <a href="{{ user.userprofile.twitter_url }}" target="_blank" class="btn btn-outline-primary btn-sm social-btn mb-2">
+                                    <img src="{% static 'images/twitterr.png' %}" alt="Twitter" class="social-icon"> Twitter
                                 </a>
-                            </li>
-                            {% endif %}
-                            {% if user.userprofile.youtube_url %}
-                            <li class="list-inline-item">
-                                <a href="{{ user.userprofile.youtube_url }}" target="_blank">
-                                    <img src="{% static 'images/youtuber.png' %}" alt="YouTube">
+                                {% endif %}
+                                {% if user.userprofile.youtube_url %}
+                                <a href="{{ user.userprofile.youtube_url }}" target="_blank" class="btn btn-outline-primary btn-sm social-btn mb-2">
+                                    <img src="{% static 'images/youtuber.png' %}" alt="YouTube" class="social-icon"> YouTube
                                 </a>
-                            </li>
-                            {% endif %}
-                            {% if user.userprofile.other_url %}
-                            <li class="list-inline-item">
-                                <a href="{{ user.userprofile.other_url }}" target="_blank">
-                                    <img src="{{ user.userprofile.link_image.url }}" alt="Other Link">
+                                {% endif %}
+                                {% if user.userprofile.other_url %}
+                                <a href="{{ user.userprofile.other_url }}" target="_blank" class="btn btn-outline-primary btn-sm social-btn mb-2">
+                                    <img src="{{ user.userprofile.link_image.url }}" alt="Other Link" class="social-icon"> Other
                                 </a>
-                            </li>
-                            {% endif %}
-                        </ul>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
 
 
 
@@ -250,11 +279,16 @@
         <li class="nav-item">
             <a class="nav-link" data-target="#books"><span class="icon-text"><i class="bi bi-book"></i> Books</span></a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" data-target="#tutorials"><span class="icon-text"><i class="bi bi-book"></i>Tutorials</span></a>
+        </li>
         {% if is_own_profile %}
             
         <li class="nav-item">
             <a class="nav-link" data-target="#saved"><span class="icon-text"><i class="bi bi-bookmark-star"></i> Saved</span></a>
         </li>
+        
+        
         {% endif %}
         
     </ul>
@@ -313,57 +347,56 @@
     <div id="answers" class="content-section">
         <div class="row">
         
-        {% for answer in profile_user.answer_auth.all %}
-        <div class="col-md-6 mb-3">
-            <div class="card h-100">
-                <div class="row g-0">
-                    
-                    <div class="col-md-10">
-                     
-                        <div class="card-body">
+            {% for answer in profile_user.answer_auth.all %}
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="row g-0">
+                        
+                        <div class="col-md-10">
+                        
+                            <div class="card-body">
+                                
+
+                                <h5 class="card-title">
+                                    <a href="{% url 'topic-detail' answer.topic_parent.id %}">{{ answer.topic_parent.topic_title }}</a>
+                                </h5> 
+                                <p class="card-text" 
+                                style="max-height: 3em;
+                                        overflow: hidden; 
+                                        display: -webkit-box;
+                                        -webkit-line-clamp: 2; 
+                                        line-clamp: 2; 
+                                        -webkit-box-orient: vertical;">{{ answer.topic_parent.topic_body }}</p>
+                                    <p class="card-text"><span class="badge bg-secondary">#{{ answer.topic_parent.topic_hashtag }}</span></p>                           
+                                        <p class="card-text">
+                                    
+                                    <small class="text-muted">{{ answer.topic_parent.topic_pub_date|timesince }}</small>
+                                </p>
+                                <p class="card-text">
+                                    <i class="bi bi-hand-thumbs-up"></i> {{ answer.topic_parent.upvotes }}
+                                    
+                                </p>
+                                <p class = 'fst-italic text-truncate'>Answer: {{answer.answer_body}}  </p>
                             
 
-                            <h5 class="card-title">
-                                <a href="{% url 'topic-detail' answer.topic_parent.id %}">{{ answer.topic_parent.topic_title }}</a>
-                            </h5> 
-                            <p class="card-text" 
-                            style="max-height: 3em;
-                                    overflow: hidden; 
-                                    display: -webkit-box;
-                                    -webkit-line-clamp: 2; 
-                                    line-clamp: 2; 
-                                    -webkit-box-orient: vertical;">{{ answer.topic_parent.topic_body }}</p>
-                                <p class="card-text"><span class="badge bg-secondary">#{{ answer.topic_parent.topic_hashtag }}</span></p>                           
-                                    <p class="card-text">
-                                
-                                <small class="text-muted">{{ answer.topic_parent.topic_pub_date|timesince }}</small>
-                            </p>
-                            <p class="card-text">
-                                <i class="bi bi-hand-thumbs-up"></i> {{ answer.topic_parent.upvotes }}
-                                
-                            </p>
-                            <p class = 'fst-italic text-truncate'>Answer: {{answer.answer_body}}  </p>
+                            </div>
                         
-
-                        </div>
                     
-                   
+                        </div>
+                
                     </div>
-            
                 </div>
             </div>
-        </div>
-        {% empty %}
-            <div class="list-group-item">
-                <p class="mb-1">You have not answered any topics yet.</p>
+            {% empty %}
+                <div class="list-group-item">
+                    <p class="mb-1">You have not answered any topics yet.</p>
+                </div>
+            {% endfor %}<!-- Dynamic Answers Content -->
             </div>
-        {% endfor %}<!-- Dynamic Answers Content -->
-    </div>
-
     </div>
     
     <div id="books" class="content-section">
-        <div class="row">
+        <div class="row"> 
         {% for book in profile_user.books_uploaded.all %}
         
         <div class="col-md-4 mb-3">
@@ -404,21 +437,51 @@
         </div>
         {% empty %}
             <div class="list-group-item">
-                <p class="mb-1">You have no books uploaded yet.</p>
+                <p class="mb-1">No books uploaded yet.</p>
             </div>
         {% endfor %}
     </div>
+    </div>
+    <div id="tutorials" class="content-section">
+        <div class="row"> 
+        {% for t in profile_user.tutoring.all %}
+        
+        <div class="card mb-3 tutorial-card">
+            <div class="card-body">
+                <a href="{% url 'tutor-detail' t.pk %}"><h5 class="card-title">{{ t.title }}</h5></a>
+                <h6 class="card-subtitle mb-2 text-muted">By {{ t.author.username }} | {{ t.date | date:"Y-m-d" }}</h6>
+                <div class="card-text mb-3" style="max-height: 100px; overflow: hidden;">
+                    {{ t.short_description }}
+                </div>
+                <div>
+                    <strong>Category:</strong> {{ t.category }}
+                </div>
+                <div class="mb-3">
+                    <strong>Tags:</strong>
+                    {% for tag in t.tags.all %}
+                        <a href="{% url 'tutors-tags' tag.slug %}" class="badge bg-secondary">{{ tag }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+            <div class="list-group-item">
+                <p class="mb-1">No tutorials created yet.</p>
+            </div>
+        {% endfor %}
+        </div>
         <!-- Dynamic Books Content -->
     </div>
     {% if is_own_profile %}
     <div id="saved" class="content-section">
         <div class="row">
+            <a href="{% url 'saved-all' %}"><span data-bs-toggle="tooltip" data-bs-placement="top" title="See all items that you have saved" class="btn btn-info mt-auto">All Saved items</span></a>
         {% for saved_topic in saved_topics %}
             <a href="{% url 'topic-detail' saved_topic.topic.id %}" class="list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-between">
                     <div class="left-section">
                         <h5 class="mb-1">{{ saved_topic.topic.topic_title }}</h5>
-                        <p class="mb-1">{{ saved_topic.topic.topic_body }}</p>
+                        <p class="mb-1">{{ saved_topic.topic.topic_body|truncatewords:50 }}</p>
                         <small class="text-muted">{{ saved_topic.topic.topic_hashtag }}</small>
                         <p><i class="bi bi-hand-thumbs-up"></i>
                     <span class="vote-count">{{ saved_topic.upvotes }}</span></p>
@@ -435,10 +498,13 @@
                 </div>
             </a>
         {% empty %}
+
             <div class="list-group-item">
                 <p class="mb-1">You have no saved topics.</p>
             </div>
-        {% endfor %}
+            
+        {% endfor %} 
+
     </div>
         <!-- Dynamic Books Content -->
     </div>

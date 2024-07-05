@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verify Your New Email Address</title>
+</head>
+<body>
+    <h1>Verify Your New Email Address</h1>
+    <p>Hello {{ user.username }},</p>
+    <p>You've requested to change your email address to {{ new_email }}. Please click the link below to verify this new email address:</p>
+    <p>
+        <a href="http://{{ domain }}{% url 'verify_email' uidb64=uid token=token %}">
+            Verify Email Address
+        </a>
+    </p>
+    <p>If you didn't request this change, please ignore this email or contact support if you have concerns.</p>
+    <p>Thank you,</p>
+    <p>Your Website Team</p>
+</body>
+</html>

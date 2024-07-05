@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Tutoring, Review
+from .models import Tutoring, Review, SavedTutorial
 from .forms import TutoringForm, ReviewForm
 # Create your views here.
 from taggit.models import Tag
@@ -25,6 +25,9 @@ def tutors_list(request):
 def tutors_detail(request, pk):
     tutorial = get_object_or_404(Tutoring, id=pk)
     user_reviews = Review.objects.filter(tutorial=tutorial).order_by('-date')
+    is_saved = False
+    if request.user.is_authenticated:
+        is_saved = SavedTutorial.objects.filter(user=request.user, tutorial=tutorial).exists()
     if request.method == 'POST' and request.user.is_authenticated:
         user_review = user_reviews.filter(reviewer=request.user).first()
 
@@ -43,7 +46,7 @@ def tutors_detail(request, pk):
         'tutor': tutorial,
         'form': form,
         'user_review': user_reviews,
-        
+        'is_saved':is_saved
     }
     return render(request, 'tutor/tutor_detail.html', context)
 
@@ -101,3 +104,26 @@ def tutor_delete(request, pk):
         return redirect('tutors-list')
     context = {'tutor':tutor}
     return render(request, 'tutor/tutor_delete.html', context)
+
+
+
+@login_required
+def save_tutorial(request, pk):
+    tutorial = get_object_or_404(Tutoring, id=pk)
+    SavedTutorial.objects.get_or_create(user=request.user, tutorial=tutorial)
+    
+    return redirect('tutor-detail', pk=pk)
+
+@login_required
+def saved_tutorials_list(request):
+    saved_tutorials = SavedTutorial.objects.filter(user=request.user).select_related('tutorial')    
+    context = {'saved_tutorials': saved_tutorials}
+    return render(request, 'tutor/saved_tutorials.html', context)
+
+@login_required
+def unsave_tutorial(request, pk):
+    tutorial = get_object_or_404(Tutoring, id=pk)
+    saved_tutorial = SavedTutorial.objects.filter(user=request.user, tutorial=tutorial)
+    if saved_tutorial.exists():
+        saved_tutorial.delete()
+    return redirect('tutor-detail', pk=pk)

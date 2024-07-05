@@ -2,22 +2,28 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Update Profile for {{ profile_user.username }}</h1>
 
-<h1>Update Profile</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ u_form|crispy }}
+        {{ p_form|crispy }}
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
 
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ u_form|crispy }}
-    {{ p_form|crispy }}
-    <button type="submit" class="btn btn-primary">Update</button>
-</form>
+    <div class="mt-4">
+        <h3>Account Settings</h3>
+        <a href="{% url 'update_email' %}" class="btn btn-secondary">Change Email</a>
+        <a href="{% url 'password_change' %}" class="btn btn-secondary">Change Password</a>
+    </div>
 
-<div>
-    <!-- Displaying social media links -->
-    <a href="{{ user.userprofile.instagram_url }}" target="_blank">Instagram</a>
-    <a href="{{ user.userprofile.facebook_url }}" target="_blank">Facebook</a>
-    <a href="{{ user.userprofile.twitter_url }}" target="_blank">Twitter</a>
-    <a href="{{ user.userprofile.youtube_url }}" target="_blank">YouTube</a>
+    <div class="mt-4">
+        <h3>Social Media Links</h3>
+        <a href="{{ profile_user.userprofile.instagram_url }}" target="_blank" class="btn btn-outline-primary">Instagram</a>
+        <a href="{{ profile_user.userprofile.facebook_url }}" target="_blank" class="btn btn-outline-primary">Facebook</a>
+        <a href="{{ profile_user.userprofile.twitter_url }}" target="_blank" class="btn btn-outline-primary">Twitter</a>
+        <a href="{{ profile_user.userprofile.youtube_url }}" target="_blank" class="btn btn-outline-primary">YouTube</a>
+    </div>
 </div>
 {% endblock %}
-

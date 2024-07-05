@@ -12,7 +12,8 @@ urlpatterns = [
     
     path('', TopicListView.as_view(), name = 'home'), 
     path('about/', views.about, name='about'),
-
+    path('search/', views.search_results, name='search_results'),
+    path('saved/all', views.saved_all, name='saved-all'),
     
 
     path('topics/detail/<pk>/', views.topic_detail, name = 'topic-detail'),
@@ -23,7 +24,7 @@ urlpatterns = [
     path('topics/delete/<pk>/', views.deleteTopic, name = 'topic-delete'),
     path('answer/delete/<pk>/', views.deleteAnswer, name = 'answer-delete'),
     path('topic/<int:topic_id>/save/', views.save_topic, name='save-topic'),
-    path('saved/', views.saved_topics_list, name='saved-topics'),
+    path('saved/topics', views.saved_topics_list, name='saved-topics'),
     
     
     path('topic/<int:topic_id>/unsave/', views.unsave_topic, name='unsave-topic'),
@@ -39,7 +40,7 @@ urlpatterns = [
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
 
     
-    path('search/', views.search_results, name='search_results'),
+    
     
     # Add other URLs as needed
 

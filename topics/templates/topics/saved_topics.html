@@ -8,8 +8,8 @@
             <a href="{% url 'topic-detail' saved_topic.topic.id %}" class="list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-between">
                     <div class="left-section">
-                        <h5 class="mb-1">{{ saved_topic.topic.topic_title }}</h5>
-                        <p class="mb-1">{{ saved_topic.topic.topic_body }}</p>
+                        <h5 class="mb-1">{{ saved_topic.topic.topic_title|truncatewords:15 }}</h5>
+                        <p class="mb-1">{{ saved_topic.topic.topic_body|truncatewords:20 }}</p>
                         <small class="text-muted">{{ saved_topic.topic.topic_hashtag }}</small>
                         <p><i class="bi bi-hand-thumbs-up"></i>
                     <span class="vote-count">{{ saved_topic.upvotes }}</span></p>

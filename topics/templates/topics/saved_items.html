@@ -1,0 +1,174 @@
+{% extends "topics/base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .search-section {
+        margin-bottom: 2rem;
+    }
+    .search-results {
+        height: 300px;
+        overflow-y: auto;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .result-item {
+        padding: 0.5rem;
+        border-bottom: 1px solid #e0e0e0;
+        transition: background-color 0.3s;
+    }
+    .result-item:hover {
+        background-color: #f1f3f5;
+    }
+    .result-item a {
+        color: #495057;
+        text-decoration: none;
+    }
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    .section-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #343a40;
+    }
+    .section-count {
+        background-color: #007bff;
+        color: #ffffff;
+        padding: 0.25rem 0.5rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="container mt-4">
+    <h4 class="mb-4 text-center" style="color: #343a40;">Saved items</h4>
+
+    <div class="row">
+        <div class="col-md-4 search-section">
+            <div class="section-header">
+                <span class="section-title">Topics</span>
+                <span class="section-count">{{ saved_topics|length }}</span>
+            </div>
+            <div class="search-results card">
+                <div class="card-body">
+                    {% if saved_topics %}
+                        {% for topic in saved_topics %}
+                            <div class="result-item">
+                                <a href="{% url 'topic-detail' topic.id %}">{{ topic.topic.topic_title }}</a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No topics found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 search-section">
+            <div class="section-header">
+                <span class="section-title">Books</span>
+                <span class="section-count">{{ saved_books|length }}</span>
+            </div>
+            <div class="search-results card">
+                <div class="card-body">
+                    {% if saved_books %}
+                        {% for book in saved_books %}
+                            <div class="result-item">
+                                <a href="{% url 'book-detail' book.id %}">{{ book.book.title }}</a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No books found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 search-section">
+            <div class="section-header">
+                <span class="section-title">Podcasts</span>
+                <span class="section-count">{{ saved_podcasts|length }}</span>
+            </div>
+            <div class="search-results card">
+                <div class="card-body">
+                    {% if saved_podcasts %}
+                        {% for podcast in saved_podcasts %}
+                            <div class="result-item">
+                                <a href="{% url 'podcast-detail' podcast.podcast.id %}">{{ podcast.podcast.title }}</a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No podcasts found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 search-section">
+            <div class="section-header">
+                <span class="section-title">Jobs</span>
+                <span class="section-count">{{ saved_jobs|length }}</span>
+            </div>
+            <div class="search-results card">
+                <div class="card-body">
+                    {% if saved_jobs %}
+                        {% for job in saved_jobs %}
+                            <div class="result-item">
+                                <a href="{% url 'job-detail' job.id %}">{{ job.title }}</a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No jobs found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 search-section">
+            <div class="section-header">
+                <span class="section-title">Tutorials</span>
+                <span class="section-count">{{ saved_tutorials|length }}</span>
+            </div>
+            <div class="search-results card">
+                <div class="card-body">
+                    {% if saved_tutorials %}
+                        {% for tutorial in saved_tutorials %}
+                            <div class="result-item">
+                                <a href="{% url 'tutor-detail' tutorial.tutorial.pk %}">{{ tutorial.tutorial.title }}</a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No tutorials found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 search-section">
+            <div class="section-header">
+                <span class="section-title">Tests</span>
+                <span class="section-count">{{ saved_tests|length }}</span>
+            </div>
+            <div class="search-results card">
+                <div class="card-body">
+                    {% if saved_tests %}
+                        {% for test in saved_tests %}
+                            <div class="result-item">
+                                <a href="{% url 'test-detail' test.id %}">{{ test.title }}</a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No tests found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

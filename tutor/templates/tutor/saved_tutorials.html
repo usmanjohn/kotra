@@ -1,0 +1,55 @@
+{% extends "topics/base.html" %}
+
+{% load static %}  <!-- Load static if needed for CSS or JS -->
+
+{% block content %}
+ <!-- Custom styles if needed -->
+
+<div class="container mt-5">
+    <div class="col-12">
+        <div class="d-flex justify-content-end mb-2"> 
+            <!-- Button group for actions -->
+            
+            <!-- Search form -->
+            <form class="d-flex">
+                <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+    <h3>Saved Tutorials</h3>
+    {% for t in saved_tutorials %}
+        
+       
+        
+        <div class="card mb-3 tutorial-card" onclick="location.href='{% url 'tutor-detail' t.tutorial.pk %}';" style="cursor: pointer;">
+        <div class="card-body">
+            <h5 class="card-title">{{ t.tutorial.title }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">By {{ t.tutorial.author.username }} | {{ t.tutorial.date | date:"Y-m-d" }}</h6>
+            <div class="card-text mb-3" style="max-height: 100px; overflow: hidden;">
+                {{ t.tutorial.short_description }}
+            </div>
+            <div>
+                <strong>Category:</strong> {{ t.tutorial.category }}
+            </div>
+            <div class="mb-3">
+                <strong>Tags:</strong>
+                {% for tag in t.tutorial.tags.all %}
+                    <a href="{% url 'tutors-tags' tag.slug %}" class="badge bg-secondary">{{ tag }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        
+    </div>
+
+    {% empty %}
+    <div class="alert alert-warning" role="alert">
+        No tutorials found.
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+// Optional: Include any JavaScript needed
+</script>
+{% endblock content %}

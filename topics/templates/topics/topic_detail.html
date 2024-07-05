@@ -33,13 +33,17 @@
                         <i class="bi bi-bookmark-check"></i>
                     </a>
                 {% endif %}
-            </h3>
+            </h3> 
             <p>{{ topic.topic_body }}</p>
            
                 
            
             <p class="card-text">
-                <span class="badge bg-primary">#{{ topic.topic_hashtag }}</span>
+                {% for tag in topic.hashtag.all %}
+                            <a href="{% url 'tagged-topics' tag.slug %}">
+                                <small class="badge bg-secondary">#{{ tag }}</small>
+                            </a>
+                            {% endfor %}
             </p>
             {% if own_topic %}
                 <span class="badge"><a class="text-wrap" href="{% url 'topic-update' topic.id %}">Edit</a></span>

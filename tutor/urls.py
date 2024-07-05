@@ -16,6 +16,12 @@ urlpatterns = [
     path('create', views.tutors_create, name = 'tutor-create'),
     path('update/<pk>', views.tutor_update, name = 'tutor-update'),
     path('delete/<pk>', views.tutor_delete, name = 'tutor-delete'),
+
+    path('<int:pk>/save/', views.save_tutorial, name='save-tutorial'),
+    path('saved/tutorials', views.saved_tutorials_list, name='saved-tutorials'),
+    
+    
+    path('<int:pk>/unsave/', views.unsave_tutorial, name='unsave-tutorial'),
     
     
     

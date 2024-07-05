@@ -17,7 +17,7 @@ from django.views.generic import View
 def bookcreate(request):
 
     if request.method == 'POST':
-        form = BookForm(request.POST)
+        form = BookForm(request.POST,  request.FILES)
     
         if form.is_valid():
             new = form.save(commit=False)

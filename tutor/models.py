@@ -27,6 +27,16 @@ class Tutoring(models.Model):
     date = models.DateField(auto_now_add=True)    
     tags = TaggableManager(blank=True)
 
+class SavedTutorial(models.Model): 
+    user = models.ForeignKey(User, related_name='saved_tutorials', on_delete=models.CASCADE)
+    tutorial = models.ForeignKey(Tutoring, related_name='saved_by_users', on_delete=models.CASCADE)
+    saved_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'tutorial')
+
+    def __str__(self) -> str:
+        return self.topic.title  # Assuming 'title' is a field in the Topic model
 
 
     def __str__(self) -> str:

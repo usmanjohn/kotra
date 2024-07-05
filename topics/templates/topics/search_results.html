@@ -1,93 +1,222 @@
 {% extends "topics/base.html" %}
+{% load static %}
 
 {% block content %}
 <style>
-    .full-height-row {
-        height: 40vh; /* 40% of the viewport height */
-        overflow-y: auto; /* Enables scrolling if content overflows */
+    body {
+        background-color: #f8f9fa;
     }
-    .narrow-row {
-        height: 20vh; /* 20% of the viewport height */
-        overflow-y: auto; /* Enables scrolling if content overflows */
+    .search-section {
+        margin-bottom: 2rem;
+    }
+    .search-results {
+        height: 300px;
+        overflow-y: auto;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .result-item {
+        padding: 0.5rem;
+        border-bottom: 1px solid #e0e0e0;
+        transition: background-color 0.3s;
+    }
+    .result-item:hover {
+        background-color: #f1f3f5;
+    }
+    .result-item a {
+        color: #495057;
+        text-decoration: none;
+    }
+    .user-list {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding: 1rem 0;
+    }
+    .user-item {
+        flex: 0 0 auto;
+        margin-right: 1rem;
+        text-align: center;
+    }
+    .user-image {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 0.5rem;
+        border: 3px solid #007bff;
+    }
+    .user-name {
+        font-size: 0.8rem;
+        color: #495057;
+        max-width: 80px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    .section-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #343a40;
+    }
+    .section-count {
+        background-color: #007bff;
+        color: #ffffff;
+        padding: 0.25rem 0.5rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
     }
 </style>
 
-<h3>Search Results for '{{ query }}'</h3>
+<div class="container mt-4">
+    <h2 class="mb-4 text-center" style="color: #343a40;">Search Results for '{{ query }}'</h2>
 
-<div class="container-fluid" style="height: 100vh;"> <!-- Make the container full viewport height -->
-    <div class="row full-height-row">
-        <div class="col-md-4">
-            <h4>Topics</h4>
-            <div class="result-container">
-                {% for topic in topic_results %}
-                <p><a href="#">{{ topic.topic_title }}</a></p>
-                {% empty %}
-                <p>No topics found.</p>
-                {% endfor %}
+    <div class="row">
+        <div class="col-md-4 search-section">
+            <div class="section-header">
+                <span class="section-title">Topics</span>
+                <span class="section-count">{{ topic_results.count }}</span>
+            </div>
+            <div class="search-results card">
+                <div class="card-body">
+                    {% if topic_results %}
+                        {% for topic in topic_results %}
+                            <div class="result-item">
+                                <a href="{% url 'topic-detail' topic.pk %}">{{ topic.topic_title }}</a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No topics found.</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <h4>Books</h4>
-            <div class="result-container">
-                {% for book in book_results %}
-                <p><a href="#">{{ book.title }}</a></p>
-                {% empty %}
-                <p>No books found.</p>
-                {% endfor %}
+        <div class="col-md-4 search-section">
+            <div class="section-header">
+                <span class="section-title">Books</span>
+                <span class="section-count">{{ book_results.count }}</span>
+            </div>
+            <div class="search-results card">
+                <div class="card-body">
+                    {% if book_results %}
+                        {% for book in book_results %}
+                            <div class="result-item">
+                                <a href="#">{{ book.title }}</a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No books found.</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <h4>Tutorials</h4>
-            <div class="result-container">
-                {% for tutorial in tutorial_results %}
-                <p><a href="#">{{ tutorial.title }}</a></p>
-                {% empty %}
-                <p>No tutorials found.</p>
-                {% endfor %}
+        <div class="col-md-4 search-section">
+            <div class="section-header">
+                <span class="section-title">Tutorials</span>
+                <span class="section-count">{{ tutorial_results.count }}</span>
             </div>
-        </div>
-    </div>
-    <div class="row full-height-row">
-        <div class="col-md-4">
-            <h4>Podcasts</h4>
-            <div class="result-container">
-                {% for podcast in podcast_results %}
-                <p><a href="#">{{ podcast.title }}</a></p>
-                {% empty %}
-                <p>No podcasts found.</p>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="col-md-4">
-            <h4>Tests</h4>
-            <div class="result-container">
-                {% for test in test_results %}
-                <p><a href="#">{{ test.name }}</a></p>
-                {% empty %}
-                <p>No tests found.</p>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="col-md-4">
-            <h4>Jobs</h4>
-            <div class="result-container">
-                {% for job in job_results %}
-                <p><a href="#">{{ job.job_title }}</a></p>
-                {% empty %}
-                <p>No jobs found.</p>
-                {% endfor %}
+            <div class="search-results card">
+                <div class="card-body">
+                    {% if tutorial_results %}
+                        {% for tutorial in tutorial_results %}
+                            <div class="result-item">
+                                <a href="#">{{ tutorial.title }}</a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No tutorials found.</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-    <div class="row narrow-row">
-        <div class="col-12">
-            <h4>Users</h4>
-            <div class="result-container">
-                {% for user in user_results %}
-                <p><a href="#">{{ user.username }}</a></p>
-                {% empty %}
-                <p>No users found.</p>
-                {% endfor %}
+
+    <div class="row">
+        <div class="col-md-4 search-section">
+            <div class="section-header">
+                <span class="section-title">Podcasts</span>
+                <span class="section-count">{{ podcast_results.count }}</span>
+            </div>
+            <div class="search-results card">
+                <div class="card-body">
+                    {% if podcast_results %}
+                        {% for podcast in podcast_results %}
+                            <div class="result-item">
+                                <a href="#">{{ podcast.title }}</a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No podcasts found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 search-section">
+            <div class="section-header">
+                <span class="section-title">Tests</span>
+                <span class="section-count">{{ test_results.count }}</span>
+            </div>
+            <div class="search-results card">
+                <div class="card-body">
+                    {% if test_results %}
+                        {% for test in test_results %}
+                            <div class="result-item">
+                                <a href="#">{{ test.title }}</a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No tests found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 search-section">
+            <div class="section-header">
+                <span class="section-title">Jobs</span>
+                <span class="section-count">{{ job_results.count }}</span>
+            </div>
+            <div class="search-results card">
+                <div class="card-body">
+                    {% if job_results %}
+                        {% for job in job_results %}
+                            <div class="result-item">
+                                <a href="#">{{ job.title }}</a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No jobs found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 search-section">
+            <div class="section-header">
+                <span class="section-title">Users</span>
+                <span class="section-count">{{ user_results.count }}</span>
+            </div>
+            <div class="user-list">
+                {% if user_results %}
+                    {% for user in user_results %}
+                        <div class="user-item">
+                            <a href="{% url 'profile' user.user.username %}" class="text-decoration-none">
+                                <img src="{{ user.image.url }}" alt="{{ user.user.username }}" class="user-image">
+                                <div class="user-name">{{ user.user.username }}</div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No users found.</p>
+                {% endif %}
             </div>
         </div>
     </div>

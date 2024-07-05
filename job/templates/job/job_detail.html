@@ -1,0 +1,60 @@
+{% extends "topics/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <img src="{{ job.images.url }}" alt="{{ job.title }}" class="img-fluid rounded mb-3" style="max-height: 200px;">
+                    <h5 class="card-title">{{ job.title }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ job.hiring_company }}</h6>
+                    <p class="card-text"><strong>Position:</strong> {{ job.position }}</p>
+                    <p class="card-text"><strong>Salary:</strong> {% if job.salary %}${{ job.salary }}{% else %}Not specified{% endif %}</p>
+                </div>
+                <div class="col-md-8">
+                    <h4>Job Description</h4>
+                    <p>{{ job.description|linebreaks }}</p>
+                    
+                    {% if job.role %}
+                    <h5>Role</h5>
+                    <p>{{ job.role|linebreaks }}</p>
+                    {% endif %}
+
+                    {% if job.required_skills %}
+                    <h5>Required Skills</h5>
+                    <p>{{ job.required_skills|linebreaks }}</p>
+                    {% endif %}
+
+                    {% if job.required_tools %}
+                    <h5>Required Tools</h5>
+                    <p>{{ job.required_tools|linebreaks }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Posted by:</strong> 
+                        <a href="{% url 'profile' job.uploader.username %}">{{ job.uploader.username }}</a></p>
+                    <p><strong>Date Posted:</strong> {{ job.date_posted }}</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    {% if job.deadline %}
+                    <p><strong>Application Deadline:</strong> {{ job.deadline }}</p>
+                    {% endif %}
+                    {% if user == job.uploader %}
+                    <a href="{% url 'job-update' job.pk %}" class="btn btn-primary">Update</a>
+                    <a href="{% url 'job-delete' job.pk %}" class="btn btn-danger">Delete</a>
+                    {% endif %}
+                    {% if job.company_links %}
+                    <a href="{{ job.company_links }}" target="_blank" class="btn btn-info">Company Website</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

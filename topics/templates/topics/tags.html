@@ -37,9 +37,12 @@
                                     -webkit-line-clamp: 2; 
                                     line-clamp: 2; 
                                     -webkit-box-orient: vertical;">{{ topic.topic_body }}</p>
-                                    <p>
-                                        <a href="" rel = 'tag'>{% for tag in topic.hashtag.all %} {{tag}} {% endfor %}</a>
-                                        </p>                           
+                                    <p class = 'card-text'>
+                                        {% for tag in topic.hashtag.all %}
+                                            <a href="{% url 'tagged-topics' tag.slug %}">
+                                                <small class="badge bg-secondary">#{{ tag }}</small>
+                                            </a>
+                            {% endfor %}                           
                                     <p class="card-text">
                                 
                                 <small class="text-muted">{{ topic.topic_pub_date|timesince }}</small>

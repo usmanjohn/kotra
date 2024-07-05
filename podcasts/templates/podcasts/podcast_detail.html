@@ -1,92 +1,91 @@
 {% extends "topics/base.html" %}
-{% load static %}
-
 {% block content %}
-<style>
-    .card-header, .card-footer {
-        background-color: #f8f9fa; /* Light grey background for header and footer */
-    }
-    .card-body {
-        background-color: #e9ecef; /* Slightly darker grey for the body */
-        padding-bottom: 20px; /* Ensures spacing between content and footer */
-    }
-    .card-text {
-        overflow: hidden; /* Prevents text overflow */
-    }
-    audio {
-        width: 100%; /* Full width audio controls */
-        margin-top: 20px; /* Space above the audio player */
-    }
-    .icon-link {
-        display: inline-block; /* Aligns the icon link with the title */
-        margin-left: 10px; /* Space between title and icon */
-    }
-</style>
-
 <div class="container mt-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">{{ podcast.title }}</h5>
-                    {% if is_saved %}
-                        <a href="{% url 'podcast-unsave' podcast.id %}" class="icon-link">
-                            <i class="bi bi-bookmark-check-fill"></i>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'podcast-save' podcast.id %}" class="icon-link">
-                            <i class="bi bi-bookmark-check"></i>
-                        </a>
-                    {% endif %}
-                </div>
-                <div class="card-body">
-                    <p class="card-text">{{ podcast.description }}</p>
-                    <button onclick="loadAudio(this, '{{ podcast.audio.url }}', '{{ podcast.id }}')" class="btn btn-primary">
-                        Play Audio
-                    </button>
-                    <audio controls id="audio-player-{{ podcast.id }}" style="display:none;">
-                        Your browser does not support the audio element.
-                    </audio>
-                    
-                    <ul class="list-unstyled mt-3">
-                        <li><strong>Length:</strong> {{ podcast.length }} minutes</li>
-                        <li><strong>Uploader:</strong> {{ podcast.audio_uploader.username }}</li>
-                        <li><strong>Speaker:</strong> {{ podcast.speaker.username }}</li>
-                    </ul>
-                </div>
-                
-                
-                <div class="card-footer text-muted">
-                    <small>Published: {{ podcast.date_published|date:"M d, Y" }}</small>
-                </div>
-            </div>
+    <a href="{% url 'podcast-saved' %}" class="btn btn-light mb-3">Saved Podcasts</a>
+    <div class="card shadow">
+        
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title">{{ podcast.title }}</h5>
+            {% if user.is_authenticated %}
+            <button id="saveButton" onclick="toggleSave({{ podcast.pk }})" class="btn btn-outline-primary">
+                {% if is_saved %}Unsave{% else %}Save{% endif %}
+            </button>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <p>{{ podcast.description }}</p>
+            <audio id="audio-player" controls class="w-100 mt-3">
+                <source src="{{ podcast.audio.url }}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            <ul class="list-unstyled mt-3">
+                <li><strong>Length:</strong> {{ podcast.length }} minutes</li>
+                <li><strong>Uploader:</strong> {{ podcast.audio_uploader.username }}</li>
+                <li><strong>Speaker:</strong> {{ podcast.speaker.username|default:"N/A" }}</li>
+                <li><strong>Published:</strong> {{ podcast.date_published|date:"M d, Y H:i" }}</li>
+            </ul>
         </div>
     </div>
 </div>
+
 <script>
-    function loadAudio(button, url, id) {
-        var audioPlayer = document.getElementById('audio-player-' + id);
-        if (audioPlayer.style.display === 'none') {
-            // Set the source of the audio only the first time
-            if (!audioPlayer.src) {
-                var source = document.createElement('source');
-                source.src = url;
-                source.type = 'audio/mpeg';
-                audioPlayer.appendChild(source);
-            }
-            audioPlayer.style.display = 'block'; // Show the audio player
-            audioPlayer.play(); // Start playing
-            button.textContent = 'Pause Audio'; // Change button text
-        } else {
-            if (audioPlayer.paused) {
-                audioPlayer.play(); // Resume playing
-                button.textContent = 'Pause Audio';
-            } else {
-                audioPlayer.pause(); // Pause the audio
-                button.textContent = 'Play Audio';
+    function toggleSave(podcastId) {
+        fetch(`/podcasts/toggle-save/${podcastId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            var button = document.getElementById('saveButton');
+            button.textContent = data.is_saved ? 'Unsave' : 'Save';
+            // Optional: Show a temporary message
+            showMessage(data.message);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            showMessage('An error occurred while saving/unsaving the podcast.');
+        });
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
+        return cookieValue;
     }
-    </script>
-    
+
+    function showMessage(message) {
+        // Create a temporary message element
+        var messageElement = document.createElement('div');
+        messageElement.textContent = message;
+        messageElement.style.position = 'fixed';
+        messageElement.style.top = '20px';
+        messageElement.style.left = '50%';
+        messageElement.style.transform = 'translateX(-50%)';
+        messageElement.style.padding = '10px';
+        messageElement.style.backgroundColor = 'rgba(0,0,0,0.7)';
+        messageElement.style.color = 'white';
+        messageElement.style.borderRadius = '5px';
+        messageElement.style.zIndex = '1000';
+
+        // Add the message to the body
+        document.body.appendChild(messageElement);
+
+        // Remove the message after 2 seconds
+        setTimeout(() => {
+            document.body.removeChild(messageElement);
+        }, 2000);
+    }
+</script>
 {% endblock %}

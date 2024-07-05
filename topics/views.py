@@ -5,10 +5,12 @@ from django.views.generic import ListView, DeleteView,DetailView,UpdateView, Cre
 from django.contrib import messages
 from django.http import JsonResponse
 from taggit.models import Tag
-           
-from podcasts.models import Podcast
+from exam.models import Test
+from tutor.models import Tutoring,SavedTutorial
+from podcasts.models import Podcast, SavedPodcast
 from users.models import UserProfile, User
-
+from book.models import Book, BookCart, BookCartItem
+from job.models import Job
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from rest_framework import generics
@@ -17,27 +19,56 @@ def about(request):
     return render(request, 'topics/about.html')
 
 
+@login_required
+def saved_all(request):
+    saved_topics = SavedTopic.objects.filter(user=request.user).select_related('topic')
+    try:
+        cart = get_object_or_404(BookCart, user=request.user)
+    except: 
+        cart = None
+    if cart is not None:
+        cart_items = BookCartItem.objects.filter(cart=cart)
+    else:
+        cart_items = None
+    saved_podcasts = SavedPodcast.objects.filter(user=request.user).select_related('podcast')
+    
+    try:
+        tutorials = SavedTutorial.objects.filter(user = request.user).select_related('tutorial')
+    except:
+        tutorials = None
+
+    context = {'saved_topics':saved_topics, 'saved_books':cart_items, 'saved_podcasts':saved_podcasts, 'saved_tutorials':tutorials}
+    return render(request, 'topics/saved_items.html', context)
+
+
+
 def search_results(request):
     query = request.GET.get('q', '')
     if query:
-        topic_results = Topic.objects.filter(Q(topic_title__icontains=query) | Q(topic_body__icontains=query))
-        podcast_results = Podcast.objects.filter(Q(title__icontains=query) | Q(description__icontains=query))
-        user_results = UserProfile.objects.filter(Q(user__username__icontains=query) | Q(bio__icontains=query))
+        topic_results = Topic.objects.filter(Q(topic_title__icontains=query) | Q(topic_body__icontains=query)).distinct()
+        book_results = Book.objects.filter(Q(title__icontains=query) | Q(description__icontains=query)).distinct()
+        tutorial_results = Tutoring.objects.filter(Q(title__icontains=query) | Q(description__icontains=query)).distinct()
+        podcast_results = Podcast.objects.filter(Q(title__icontains=query) | Q(description__icontains=query)).distinct()
+        
+        test_results = Test.objects.filter(Q(title__icontains=query) | Q(description__icontains=query)| Q(question__question_text__icontains=query)).distinct()
+        job_results = Job.objects.filter(Q(title__icontains=query) | Q(description__icontains=query)).distinct()
+        user_results = UserProfile.objects.filter(Q(user__username__icontains=query) | Q(bio__icontains=query)).distinct()
     else:
-        topic_results = Podcast.results = user_results = []
-    job_results = None
-    tutorial_results = None
-    test_results = None
+        topic_results = Podcast.results = user_results = tutorial_results = test_results = job_results = book_results = []
+    
     context = {
         'query': query,
         'topic_results': topic_results,
         'podcast_results': podcast_results,
         'user_results': user_results,
         "test_results":test_results,
+        "book_results":book_results,
         "tutorial_results":tutorial_results,
         'job_results':job_results
     }
     return render(request, 'topics/search_results.html', context)
+
+
 
 
 class TopicListView(ListView):
@@ -53,7 +84,7 @@ class TopicListView(ListView):
             return Topic.objects.filter(
                 Q(topic_title__icontains=query) |
                 Q(topic_body__icontains=query) |
-                Q(topic_hashtag__icontains=query)
+                Q(topic_category__icontains=query)
             ).order_by("-topic_pub_date", 'topic_title')
 
 
@@ -210,10 +241,16 @@ def createTopic(request):
         form = TopicForm(request.POST)
         if form.is_valid:
             topic = form.save(commit=False)
+            
             topic.topic_author = request.user
+            
+            
             topic.save() 
             form.save_m2m()
+            if not topic.hashtag.exists():
+                topic.hashtag.add('general') 
             messages.success(request, 'Topic created successfully')
+
             return redirect('/')
     else:
         form = TopicForm()

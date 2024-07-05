@@ -2,60 +2,151 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-4">
-    <img src="{% static 'images/image.png' %}" alt="Our logo" class="img-fluid">
-    <div class="alert alert-success" role="alert">
-        <h3 class="fst-italic">Our vision</h3>
-        <p>Every member is a passenger that is heading towards their destionation with us. Kotrain takes care of each passenger; our aim is to make your journey fun and safe, as well as to help you get where you want quickly.</p>
-    
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 text-center mb-5">
+            
+            <h1 class="display-4 mb-4">Welcome to Kotrain</h1>
+            <p class="lead">Your ultimate resource for learning Korean</p>
+        </div>
     </div>
-    
-    <div class="alert" role="alert">  
-    <p class="mt-3">
 
-        Welcome to <strong>Kotrain</strong>, your ultimate resource for learning Korean. Our platform, Kotrain, is designed with a simple mission: to make learning Korean as accessible and effective as possible. Through a variety of interactive features and resources, we aim to support every step of your language learning journey.
-    </p>
-    
-    <ul>
-        <li><strong>Topics:</strong> Dive into a broad spectrum of topics that cover essential grammar, vocabulary, and cultural insights. Engage with the community by asking questions and sharing knowledge. You can explore our extensive topics <a href="{% url 'home' %}">here</a>.</li>
-        <li><strong>Answers:</strong> Get comprehensive answers or contribute your own insights to help others. This collaborative environment enhances understanding and retention. Discover more <a href="{% url 'home' %}">here</a>.</li>
-        <li><strong>Books:</strong> Access our curated selection of books that are tailored to support learners at all levels. From textbooks to novels, our resources are geared towards enriching your learning experience. View our collection <a href="{% url 'book-list' %}">here</a>.</li>
-        <li><strong>Tutorials:</strong> Our step-by-step tutorials provide you with the guidance you need to navigate through the complexities of the Korean language effectively.</li>
-        <li><strong>Podcasts:</strong> Listen to our weekly podcasts featuring discussions on trending topics and cultural nuances that are crucial for mastering Korean.</li>
-        <li><strong>Tests:</strong> Challenge your skills and prepare for official Korean language proficiency tests through our customized practice tests.</li>
-        <li><strong>Jobs:</strong> Access opportunities that require or value knowledge of the Korean language, helping you advance your career by leveraging your language skills.</li>
-        <li><strong>Making Friends:</strong> Connect with a community of learners and native speakers. Practice your Korean and learn in a social context, making learning enjoyable and practical.</li>
-    </ul>
-</div>
-    <h2>Why Kotrain?</h2>
-    <p>At Kotrain, we believe that learning a new language should be a rewarding and engaging experience. Our platform is designed to provide you with all the tools you need to succeed, from beginner to advanced levels. By integrating cultural insights and practical language skills, we ensure that you are well-prepared to use Korean in real-world situations.</p>
+    <div class="row mb-5">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Our Vision</h2>
+                    <p class="card-text lead text-center fst-italic">
+                        "Every member is a passenger heading towards their destination with us. Kotrain takes care of each passenger; our aim is to make your journey fun and safe, as well as to help you get where you want quickly."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <h2>Our Logo</h2>
-    <p>The Kotrain logo symbolizes the journey of learning and progress. The intertwined letters and vibrant colors reflect the dynamic and interconnected nature of language learning. Our logo is not just a symbol but a commitment to your educational journey.</p>
+    <div class="row mb-5">
+        <div class="col-lg-10 offset-lg-1">
+            <h2 class="mb-4">What We Offer</h2>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Topics</h5>
+                            <p class="card-text">Dive into a broad spectrum of topics that cover essential grammar, vocabulary, and cultural insights.</p>
+                            <a href="{% url 'home' %}" class="btn btn-outline-primary">Explore</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Answers</h5>
+                            <p class="card-text">Get comprehensive answers or contribute your own insights to help others.</p>
+                            <a href="{% url 'home' %}" class="btn btn-outline-primary">Explore</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Books</h5>
+                            <p class="card-text">Access our curated selection of books that are tailored to support learners at all levels.</p>
+                            <a href="{% url 'book-list' %}" class="btn btn-outline-primary">Explore</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">tutorials</h5>
+                            <p class="card-text">"Our step-by-step tutorials provide you with the guidance you need to navigate through the complexities of the Korean language effectively."</p>
+                            <a href="{% url 'tutors-list' %}" class="btn btn-outline-primary">Explore</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Podcasts</h5>
+                            <p class="card-text">Listen to our weekly podcasts featuring discussions on trending topics and cultural nuances that are crucial for mastering Korean.</p>
+                            <a href="{% url 'podcast-list' %}" class="btn btn-outline-primary">Explore</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Tests</h5>
+                            <p class="card-text">Challenge your skills and prepare for official Korean language proficiency tests through our customized practice tests.</p>
+                            <a href="{% url 'test_list' %}" class="btn btn-outline-primary">Explore</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Jobs</h5>
+                            <p class="card-text">Access opportunities that require or value knowledge of the Korean language, helping you advance your career by leveraging your language skills.</p>
+                            <a href="{% url 'job-list' %}" class="btn btn-outline-primary">Explore</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Passengers</h5>
+                            <p class="card-text">Connect with a community of learners and native speakers. Practice your Korean and learn in a social context, making learning enjoyable and practical.</p>
+                            <a href="{% url 'profile-list' %}" class="btn btn-outline-primary">Explore</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more feature cards here -->
+            </div>
+        </div>
+    </div>
 
-    <h2>Contact Us</h2>
-    <p>Follow us on social media to stay updated on new features, upcoming events, and more:</p>
-    <ul class="list-inline">
-        <li class="list-inline-item">
-            <a href="https://www.instagram.com/yourprofile" target="_blank">
-                <img src="{% static 'images/instagram.jpg' %}" alt="Instagram" style="width: 40px; height: 40px;">
-            </a>
-        </li>
-        <li class="list-inline-item">
-            <a href="https://www.facebook.com/yourprofile" target="_blank">
-                <img src="{% static 'images/facebook.jpg' %}" alt="Facebook" style="width: 40px; height: 40px;">
-            </a>
-        </li>
-        <li class="list-inline-item">
-            <a href="https://www.twitter.com/yourprofile" target="_blank">
-                <img src="{% static 'images/twitter.png' %}" alt="Twitter" style="width: 40px; height: 40px;">
-            </a>
-        </li>
-        <li class="list-inline-item">
-            <a href="https://www.youtube.com/yourprofile" target="_blank">
-                <img src="{% static 'images/youtuber.png' %}" alt="YouTube" style="width: 40px; height: 40px;">
-            </a>
-        </li>
-    </ul>
+    <div class="row mb-5">
+        <div class="col-lg-10 offset-lg-1">
+            <h2 class="mb-4">Why Kotrain?</h2>
+            <p>At Kotrain, we believe that learning a new language should be a rewarding and engaging experience. Our platform is designed to provide you with all the tools you need to succeed, from beginner to advanced levels. By integrating cultural insights and practical language skills, we ensure that you are well-prepared to use Korean in real-world situations.</p>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-lg-10 offset-lg-1">
+            <h2 class="mb-4">Our Logo</h2>
+            <p>The Kotrain logo symbolizes the journey of learning and progress. The intertwined letters and vibrant colors reflect the dynamic and interconnected nature of language learning. Our logo is not just a symbol but a commitment to your educational journey.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-10 offset-lg-1 text-center">
+            <img src="{% static 'images/image.png' %}" alt="Kotrain logo" class="img-fluid mb-4" style="max-width:300px;">
+            <h2 class="mb-4">Connect With Us</h2>
+            <p class="mb-4">Follow us on social media to stay updated on new features, upcoming events, and more:</p>
+            <ul class="list-inline">
+                <li class="list-inline-item me-4">
+                    <a href="https://www.instagram.com/yourprofile" target="_blank" class="text-decoration-none">
+                        <img src="{% static 'images/instagram.jpg' %}" alt="Instagram" class="rounded-circle" style="width: 50px; height: 50px;">
+                    </a>
+                </li>
+                <li class="list-inline-item me-4">
+                    <a href="https://www.facebook.com/yourprofile" target="_blank" class="text-decoration-none">
+                        <img src="{% static 'images/facebook.jpg' %}" alt="Facebook" class="rounded-circle" style="width: 50px; height: 50px;">
+                    </a>
+                </li>
+                <li class="list-inline-item me-4">
+                    <a href="https://www.twitter.com/yourprofile" target="_blank" class="text-decoration-none">
+                        <img src="{% static 'images/twitter.png' %}" alt="Twitter" class="rounded-circle" style="width: 50px; height: 50px;">
+                    </a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="https://www.youtube.com/yourprofile" target="_blank" class="text-decoration-none">
+                        <img src="{% static 'images/youtuber.png' %}" alt="YouTube" class="rounded-circle" style="width: 50px; height: 50px;">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 {% endblock content %}

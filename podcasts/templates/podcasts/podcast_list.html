@@ -1,20 +1,35 @@
 {% extends "topics/base.html" %}
-{% load static %}
-
 {% block content %}
 <style>
-    .card-header, .card-footer {
-        background-color: #f8f9fa; /* Light grey background for header and footer */
+    .card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .card-header {
+        flex: 0 0 auto;
     }
     .card-body {
-        background-color: #e9ecef; /* Slightly darker grey for the body */
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: column;
     }
-    .card-text, .list-unstyled {
-        height: 100px; /* Fixed height for text and list */
-        overflow: hidden; /* Hide overflow content */
+    .card-text {
+        flex: 0 0 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
-    audio {
-        width: 100%; /* Full width audio controls */
+    .card-footer {
+        flex: 0 0 auto;
+    }
+    .podcast-info {
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .audio-player {
+        flex: 0 0 auto;
     }
 </style>
 
@@ -22,33 +37,32 @@
     <h4 class="text-center mb-4">Podcasts</h4>
     <a href="{% url 'podcast-saved' %}" class="btn btn-light mb-3">Saved Podcasts</a>
     
-    <div class="row">
-        {% for podcast in podcasts %}
+    <div class="row" id="podcast-list">
+        {% for podcast in page_obj %}
         <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow">
+            <div class="card shadow">
                 <div class="card-header">
-                    <h5 class="card-title">{{ podcast.title }}</h5>
+                    <h5 class="card-title text-truncate">{{ podcast.title }}</h5>
                 </div>
                 <div class="card-body">
                     <p class="card-text">{{ podcast.description|truncatewords:20 }}</p>
-                    <audio controls class="mt-2" id="audio-player-{{ podcast.id }}" preload="none">
-                        <source id="source-{{ podcast.id }}" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
-                    
-                    
-                    
-                    <ul class="list-unstyled mt-3">
-                        <li><strong>Length:</strong> {{ podcast.length }} minutes</li>
-                        <li><strong>Uploader:</strong> {{ podcast.audio_uploader.username }}</li>
-                        <li><strong>Speaker:</strong> {{ podcast.speaker.username }}</li>
-                        <li><a href="{% url 'podcast-detail' podcast.id %}">See more</a></li>
-                      
-                        
-                    </ul>
+                    <div class="audio-player">
+                        <audio controls class="w-100 mb-3" id="audio-player-{{ podcast.id }}" preload="none">
+                            <source src="{{ podcast.audio.url }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                    <div class="podcast-info">
+                        <ul class="list-unstyled">
+                            <li><strong>Length:</strong> {{ podcast.length }} minutes</li>
+                            <li><strong>Uploader:</strong> {{ podcast.audio_uploader.username }}</li>
+                            <li><strong>Speaker:</strong> {{ podcast.speaker.username|default:"N/A" }}</li>
+                        </ul>
+                        <a href="{% url 'podcast-detail' podcast.id %}" class="btn btn-primary btn-sm mt-2">See more</a>
+                    </div>
                 </div>
                 <div class="card-footer text-muted">
-                    <small>Published: {{ podcast.date_published|date:"M d, Y" }}</small>
+                    <small>Published: {{ podcast.date_published|date:"M d, Y H:i" }}</small>
                 </div>
             </div>
         </div>
@@ -58,14 +72,22 @@
         </div>
         {% endfor %}
     </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">previous</a></li>
+            {% endif %}
+
+            <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a></li>
+            {% endif %}
+        </ul>
+    </nav>
 </div>
-<script>
-    function loadAudio(podcastId, audioUrl) {
-        var audioPlayer = document.getElementById('audio-player-' + podcastId);
-        var source = document.getElementById('source-' + podcastId);
-        source.src = audioUrl;
-        audioPlayer.load(); // Load the new source
-        audioPlayer.play(); // Play the audio
-    }
-    </script>
 {% endblock %}

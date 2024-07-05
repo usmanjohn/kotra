@@ -1,0 +1,74 @@
+{% extends "topics/base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="text-center mb-4">
+        <h4 class="display-6">{{ test.title }}</h4>
+        <p class="text-muted">{{ test.description }}</p>
+    </div>
+    <form method="post" action="{% url 'submit_test' test.id %}">
+        {% csrf_token %}
+        {% for question in questions %}
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <p class="card-title" {% if question.id in unanswered_questions %}style="color: red;"{% endif %}>
+                        {{ forloop.counter }}. {{ question.question_text|safe }}
+                    </p>
+                    {% if question.question_type == 'MC' %}
+                        {% for choice in question.choice_set.all %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="question_{{ question.id }}" id="choice_{{ choice.id }}" value="{{ choice.id }}"
+                                    {% if answered_choices|get_item:question.id == choice.id %}checked{% endif %}>
+                                <label class="form-check-label" for="choice_{{ choice.id }}">
+                                    {{ choice.choice_text }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    {% elif question.question_type == 'WA' %}
+                        <div class="form-group">
+                            <textarea class="form-control {% if question.id in unanswered_questions %}is-invalid{% endif %}" name="question_{{ question.id }}" rows="3">{{ answered_texts|get_item:question.id }}</textarea>
+                            {% if question.id in unanswered_questions %}
+                                <div class="invalid-feedback">
+                                    Please provide an answer for this question.
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" name="save_results" value="yes" id="save_results">
+            <label class="form-check-label" for="save_results">
+                Save my results
+            </label>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Submit Test</button>
+    </form>
+</div>
+
+<style>
+    .container {
+        max-width: 900px;
+    }
+    .card {
+        border: 1px solid #e3e6f0;
+        border-radius: 0.75rem;
+    }
+    .card-title {
+        margin-bottom: 1rem;
+        font-weight: bold;
+    }
+    .form-check-label {
+        margin-left: 0.5rem;
+    }
+    .btn-block {
+        width: 100%;
+    }
+    .invalid-feedback {
+        display: block;
+    }
+</style>
+{% endblock content %}

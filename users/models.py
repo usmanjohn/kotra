@@ -5,18 +5,19 @@ from django.db.models import Count, Q
  
 from django.utils import timezone
     
-
+from django.contrib.auth.models import AbstractUser
 
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userprofile')
+    is_email_verified = models.BooleanField(default=False)
     image = models.ImageField(upload_to='profile_pics', default='profile_pics/default.png')
-    bio = models.CharField(max_length=150)
-    instagram_url = models.URLField(blank=True, null=True, default='#')
-    facebook_url = models.URLField(blank=True, null=True, default='#')
-    twitter_url = models.URLField(blank=True, null=True, default='#')
-    youtube_url = models.URLField(blank=True, null=True, default='#')
-    other_url = models.URLField(blank=True, null=True, default='#')
+    bio = models.CharField(max_length=300)
+    instagram_url = models.URLField(blank=True, null=True, default='https://instagram.com/')
+    facebook_url = models.URLField(blank=True, null=True, default='https://facebook.com/')
+    twitter_url = models.URLField(blank=True, null=True, default='https://x.com/')
+    youtube_url = models.URLField(blank=True, null=True, default='https://www.youtube.com/')
+    other_url = models.URLField(blank=True, null=True, default='https://www.youtube.com/')
     link_image = models.ImageField(upload_to='links', default='links/personal_profile.png')
     date = models.DateField(auto_now_add=True)
     

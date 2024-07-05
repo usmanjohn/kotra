@@ -1,23 +1,25 @@
 {% extends "topics/base.html" %}
-
 {% block content %}
 <div class="container mt-4">
     <div class="row">
         <div class="col-12">
-            <div class="d-flex justify-content-end mb-2">
+            <div class="d-flex justify-content-end">
                 <!-- Button group for actions -->
+                
                 <div class="btn-group me-2" role="group" aria-label="Action Buttons">
-                    <a href="{% url 'topic-create' %}" class="btn btn-outline-primary ">
-                        <i class="bi bi-plus-circle"></i> Create
+                    <a href="{% url 'topic-create' %}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Create New Topic">
+                        <i class="bi bi-plus-circle"></i> 
+                        
                     </a>
-                    <a href="" class="btn btn-outline-secondary">
-                        <i class="bi bi-funnel"></i> Filter
+                    <a href="" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Filter Topics">
+                        <i class="bi bi-filter-square"></i> 
+                        
                     </a>
                 </div>
                 <!-- Search form -->
                 <form class="d-flex">
-                    <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    <input class="form-control" type="search" name="q" placeholder="Search across topics" aria-label="Search">
+                    <button class="btn btn-outline-success hover-overlay" data-bs-toggle="tooltip" title="Search across Topics" type="submit"><i class="bi bi-search"></i></button>
                 </form>
             </div>
         </div>
@@ -67,7 +69,6 @@
     </div>
 </div>
 
-
 <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
         {% if page_obj.has_previous %}
@@ -105,4 +106,6 @@
         {% endif %}
     </ul>
 </nav>
-{% endblock %}
+
+
+{% endblock content %}
