@@ -13,19 +13,27 @@ import os
 from pathlib import Path
 import django_heroku
 import dj_database_url
-
+import environ
+env = environ.Env()
+# Reading .env file
+environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Initialize environment variables
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-6y7_62a1@rcz3!67cmy_@n7o!-hvcl50h7-9bcd^(#!&41_uzc'
+# Use environment variables
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env.bool('DEBUG', default=False)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DATABASES = {
+    'default': env.db(),  # Assumes DATABASE_URL in the .env file, e.g., postgres://USER:PASSWORD@HOST:PORT/NAME
+}
+
+# You can also retrieve other environment variables
+USER_DB = env('USER_DB')
+PASSWORD_DB = env('PASSWORD_DB')
 
 ALLOWED_HOSTS = ["*"]
 
@@ -106,11 +114,6 @@ WSGI_APPLICATION = 'kotrain.wsgi.application'
 #    }
 #}
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')
-    )
-}
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 11240 # higher than the count of fields
 
