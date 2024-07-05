@@ -3,9 +3,15 @@ from .models import Test, Question, Choice, UserAnswer, TestAttempt
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Test, Question, Choice, UserAnswer, TestAttempt
+from django.contrib import messages
 def test_list(request):
     tests = Test.objects.all()
-    user_attempts = TestAttempt.objects.filter(user=request.user).order_by('-timestamp')
+    if request.user.is_authenticated:
+        user_attempts = TestAttempt.objects.filter(user=request.user).order_by('-timestamp')
+    else:
+        user_attempts = None
     context = {
         'tests': tests,
         'user_attempts': user_attempts
@@ -13,9 +19,6 @@ def test_list(request):
     return render(request, 'exam/test_list.html', context)
 
 
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Test, Question, Choice, UserAnswer, TestAttempt
-from django.contrib import messages
 
 def take_test(request, test_id):
     test = get_object_or_404(Test, pk=test_id)
