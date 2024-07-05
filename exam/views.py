@@ -5,8 +5,14 @@ from django.contrib.auth.decorators import login_required
 
 def test_list(request):
     tests = Test.objects.all()
-    context = {'tests': tests}
+    user_attempts = TestAttempt.objects.filter(user=request.user).order_by('-timestamp')
+    context = {
+        'tests': tests,
+        'user_attempts': user_attempts
+    }
     return render(request, 'exam/test_list.html', context)
+
+
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Test, Question, Choice, UserAnswer, TestAttempt
 from django.contrib import messages
@@ -135,21 +141,45 @@ def test_results(request, test_id, attempt_id):
     user_answers = UserAnswer.objects.filter(test_attempt=test_attempt)
     
     results = []
+    correct_answers = 0
+    total_questions = test.question_set.count()
+
     for user_answer in user_answers:
         question = user_answer.question
         correct_choice = question.choice_set.filter(is_correct=True).first()
         correct_answer = correct_choice.choice_text if correct_choice else ''
         user_selected_answer = user_answer.selected_choice.choice_text if user_answer.selected_choice else user_answer.written_answer
-        is_user_right = correct_answer == user_selected_answer
+        
+        if question.question_type == 'MC':
+            is_user_right = user_answer.selected_choice == correct_choice
+        else:
+            # For written answers, you might want to implement a separate grading system
+            # For now, we'll consider them incorrect
+            is_user_right = False
+        
+        if is_user_right:
+            correct_answers += 1
+
         results.append({
-            'question_text': question.question_text,
+            'question': question,
             'user_answer': user_selected_answer,
             'correct_answer': correct_answer,
             'is_user_right': is_user_right
         })
 
+    # Calculate and update the score
+    test_attempt.score = (correct_answers / total_questions) * 100
+    test_attempt.save()
+
     return render(request, 'exam/test_results.html', {
         'test': test,
         'results': results,
         'attempt': test_attempt,
+        'correct_answers': correct_answers,
+        'total_questions': total_questions,
     })
+
+@login_required
+def question_detail(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    return render(request, 'exam/question_detail.html', {'question': question})

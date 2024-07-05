@@ -1,0 +1,23 @@
+{% extends "topics/base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Question Details</h5>
+            <p class="card-text">{{ question.question_text|safe }}</p>
+            {% if question.question_type == 'MC' %}
+                <h6>Choices:</h6>
+                <ul>
+                    {% for choice in question.choice_set.all %}
+                        <li {% if choice.is_correct %}class="text-success font-weight-bold"{% endif %}>
+                            {{ choice.choice_text }}
+                            {% if choice.is_correct %} (Correct Answer){% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+    <a href="javascript:history.back()" class="btn btn-primary mt-3">Back to Results</a>
+</div>
+{% endblock content %}

@@ -1,46 +1,78 @@
 {% extends "topics/base.html" %}
 {% block content %}
-<div class="container mt-4">
-    <div class="text-center mb-4">
-        <h2 class="display-4">Available Tests</h2>
-    </div>
-    <div class="list-group">
-        {% for test in tests %}
-            <a href="{% url 'take_test' test.id %}" class="list-group-item list-group-item-action mb-3 shadow-sm">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{{ test.title }}</h5>
-                    <small class="text-muted">{{ test.question_set.count }} Questions</small>
+<div class="container py-5">
+    <h1 class="text-center mb-5">Available Tests</h1>
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="test-list">
+                {% for test in tests %}
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ test.title }}</h5>
+                            <p class="card-text">{{ test.description }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">{{ test.question_set.count }} Questions</small>
+                                <a href="{% url 'take_test' test.id %}" class="btn btn-primary">Take Test</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Previous Results
+                </button>
+                
+                <div class="collapse" id="collapseExample">
+                    {% if user_attempts %}
+                    <div class="accordion" id="attemptsAccordion">
+                        {% for attempt in user_attempts %}
+                            <div class="card mb-2">
+                                
+                                    
+                                
+                                <div class="card-header p-0" id="heading{{ forloop.counter }}">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link btn-block text-left p-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+                                            <div class="row no-gutters w-100">
+                                                
+                                                    <span class="text-truncate d-block">{{ attempt.test.title }}</span>
+                                                
+                                                
+                                            </div>
+                                        </button>
+                                        
+                                    </h2>
+                                    
+                                </div>
+                                <span class="btn">{{ attempt.score|floatformat:1 }}%</span>
+                                <div id="collapse{{ forloop.counter }}" class="collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#attemptsAccordion">
+                                    <div class="card-body">
+                                        <p>Date: {{ attempt.timestamp|date:"M d, Y H:i" }}</p>
+                                        <a href="{% url 'test_results' attempt.test.id attempt.id %}" class="btn btn-sm btn-outline-primary">View Results</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">No attempts yet</p>
+                {% endif %}
                 </div>
-                <p class="mb-1">{{ test.description }}</p>
-                <div class="d-flex w-100 justify-content-between">
-                    <small class="text-muted">
-                        Multiple Choice
-                    </small>
-                    <span class="badge badge-primary">Take Test</span>
-                </div>
-            </a>
-        {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
 
-<style>
-    .container {
-        max-width: 900px;
-    }
-    .list-group-item {
-        border: 1px solid #e3e6f0;
-        border-radius: 0.75rem;
-        transition: all 0.3s ease-in-out;
-    }
-    .list-group-item:hover {
-        transform: scale(1.02);
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    }
-    .badge-primary {
-        background-color: #007bff;
-        color: white;
-        padding: 0.5em 1em;
-        border-radius: 0.5rem;
-    }
-</style>
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('#pastAttemptsCollapse').on('show.bs.collapse hide.bs.collapse', function () {
+        $(this).prev().find('.fa').toggleClass('fa-chevron-down fa-chevron-up');
+    });
+});
+</script>
+{% endblock extra_js %}
 {% endblock content %}

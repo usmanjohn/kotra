@@ -5,12 +5,13 @@
     <div class="text-center mb-4">
         <h4 class="display-4">Test Results</h4>
         <p class="text-muted">Attempt on: {{ attempt.timestamp }}</p>
+        <h5>Score: {{ attempt.score|floatformat:2 }}%</h5>
     </div>
     {% for result in results %}
         <div class="card mb-3 shadow-sm">
             <div class="card-body">
-                <h5 class="card-title text-primary">Question: {{ forloop.counter }}</h5>
-                <p class="card-text font-weight-bold">{{ result.question_text|safe }}</p>
+                <h5 class="card-title text-primary">Question {{ forloop.counter }}</h5>
+                <p class="card-text font-weight-bold">{{ result.question.question_text|safe }}</p>
                 <hr>
                 <div class="row">
                     <div class="col-md-6">
@@ -29,24 +30,10 @@
                         {{ result.is_user_right|yesno:"Correct,Incorrect" }}
                     </p>
                 </div>
+                <a href="{% url 'question_detail' result.question.id %}" class="btn btn-sm btn-outline-primary">View Question</a>
             </div>
         </div>
     {% endfor %}
+    <a href="{% url 'test_list' %}" class="btn btn-primary">Back to Test List</a>
 </div>
-
-<style>
-    .container {
-        max-width: 900px;
-    }
-    .card {
-        border: 1px solid #e3e6f0;
-        border-radius: 0.75rem;
-    }
-    .card-title {
-        margin-bottom: 0.75rem;
-    }
-    .card-text {
-        margin-bottom: 0.5rem;
-    }
-</style>
 {% endblock content %}
