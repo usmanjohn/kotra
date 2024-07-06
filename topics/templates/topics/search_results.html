@@ -108,7 +108,7 @@
                     {% if book_results %}
                         {% for book in book_results %}
                             <div class="result-item">
-                                <a href="#">{{ book.title }}</a>
+                                <a href="{% url 'book-detail' book.id %}">{{ book.title }}</a>
                             </div>
                         {% endfor %}
                     {% else %}
