@@ -19,7 +19,7 @@ def test_list(request):
     return render(request, 'exam/test_list.html', context)
 
 
-
+@login_required
 def take_test(request, test_id):
     test = get_object_or_404(Test, pk=test_id)
     questions = test.question_set.all()

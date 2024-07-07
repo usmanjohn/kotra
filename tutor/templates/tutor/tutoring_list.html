@@ -13,15 +13,14 @@
                 <a href="{% url 'tutor-create' %}" class="btn btn-outline-primary">
                     <i class="bi bi-plus-circle"></i> Create
                 </a>
-                <a href="" class="btn btn-outline-secondary">
-                    <i class="bi bi-funnel"></i> Filter
-                </a>
+                
             </div>
             <!-- Search form -->
-            <form class="d-flex">
-                <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
+            <form class="d-flex" action="{% url 'tutors-list' %}" method="get">
+                <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search" value="{{ query }}">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
+            
         </div>
     </div>
     

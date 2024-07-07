@@ -5,6 +5,7 @@ from .forms import TutoringForm, ReviewForm
 from taggit.models import Tag
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 
 def tag_list(request, tag_slug = None):
     tutoring = Tutoring.objects.filter(status = 'posted').order_by('-id')
@@ -12,14 +13,21 @@ def tag_list(request, tag_slug = None):
     tag = None
     if tag_slug:
         tag = get_object_or_404(Tag, slug = tag_slug)
-        products = tutoring.filter(tags__in = [tag])
-    context = {'tutoring':tutoring}
+        tutoring_tags = tutoring.filter(tags__in = [tag])
+    context = {'tutoring':tutoring_tags}
     return render(request, 'tutor/t_tags.html', context)
 
 def tutors_list(request):
-    tutoring = Tutoring.objects.filter(status = 'posted').order_by('-date','title')
-    context = {'tutoring':tutoring}
-    return render(request, 'tutor/tutoring_list.html',context )
+    query = request.GET.get('q', '')  # Get the search query from GET request
+    tutoring = Tutoring.objects.filter(status='posted').order_by('-date', 'title')
+
+    if query:  # If a query is present, filter by the search term in the title
+        tutoring = tutoring.filter(Q(title__icontains=query) | Q(description__icontains=query)).distinct()
+        
+
+    context = {'tutoring': tutoring, 'query': query}
+    return render(request, 'tutor/tutoring_list.html', context)
+
 
 
 def tutors_detail(request, pk):

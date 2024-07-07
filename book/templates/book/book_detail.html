@@ -38,13 +38,15 @@
                 <a href="{% url 'book-delete' book.id %}" class="btn btn-warning btn-sm">Delete</a>
             </div>
             {% endif %}
-            <hr>
-            
-                
+            <hr>        
                 
         </div>
-        <h4>Reviews</h4>
-        <h5 class = 'text-warning'>{{ book.avg_rating }}</h5>
+        {% if user_review_counts == 1 %}
+        <h4>{{user_review_counts}} Review </h4>
+        {% elif user_review_counts > 1 %}
+        <h4>{{user_review_counts}} Reviews </h4>
+        {% endif %}
+        <h5 class = 'text-warning'>{{ book.avg_rating }}</h5> 
         <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapsereview" aria-expanded="false" aria-controls="collapseExample">
             Add Review
           </button>
@@ -59,7 +61,7 @@
                 <a href="{% url 'login' %}?next={% firstof request.path '/' %}" class="btn btn-outline-primary me-2">Login to review</a>
                 {% endif %}
         </div>
-        
+      
     {% for review in book.review.all %}
             <div class="mb-3">
                 <strong>{{ review.reviewer.username }}</strong>

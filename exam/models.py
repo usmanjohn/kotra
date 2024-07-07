@@ -19,13 +19,17 @@ class Question(models.Model):
     
     question_type = models.CharField(max_length=2, choices=QUESTION_TYPES)
     def __str__(self):
-        return self.question_text[:20]
+        # This will format the string to show the question ID and the test title
+        return f"{self.id} - {self.test.title}"
 
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
     is_correct = models.BooleanField(default=False)
+    def __str__(self):
+        # This will format the string to show the question ID and the test title
+        return f"ch - {self.id} - for q {self.question.id}"
 
 
 class TestAttempt(models.Model):
@@ -33,6 +37,10 @@ class TestAttempt(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     score = models.FloatField(default=0)
+
+    def __str__(self):
+        # This will format the string to show the question ID and the test title
+        return f"{self.id} - {self.test.title}"
 
     def calculate_score(self):
         total_questions = self.test.question_set.count()

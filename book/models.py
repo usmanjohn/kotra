@@ -64,7 +64,7 @@ class BookCartItem(models.Model):
 class BookOrder(models.Model):
     cart = models.ForeignKey(BookCart, on_delete=models.CASCADE) 
     amount = models.DecimalField(max_digits=10, decimal_places=2)  # Use DecimalField for monetary values
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True) 
 
     def __str__(self):
         return f"Order #{self.id} - {self.cart.user.username}"

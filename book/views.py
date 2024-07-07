@@ -23,7 +23,8 @@ def bookcreate(request):
             new = form.save(commit=False)
             new.uploader = request.user
             new.save()
-            return redirect('/')
+            messages.success(request, 'Book has been posted, thank you!!')
+            return redirect('book-list')
     else:
         form = BookForm()
     context = {'form':form}
@@ -46,6 +47,7 @@ def booklist(request):
 def bookdetail(request, pk):
     book = get_object_or_404(Book, id=pk)
     user_reviews = BookRating.objects.filter(book=book).order_by('-date')
+    user_review_counts = BookRating.objects.filter(book=book).count()
     if request.method == 'POST' and request.user.is_authenticated:
         user_review = user_reviews.filter(reviewer=request.user).first()
         
@@ -67,7 +69,7 @@ def bookdetail(request, pk):
         cart = BookCart.objects.filter(user=request.user).first()
         if cart and BookCartItem.objects.filter(cart=cart, book=book).exists():
             is_in_cart = True
-    context = {'book': book, 'is_in_cart': is_in_cart, 'user_review':user_reviews, 'form':form}
+    context = {'book': book, 'is_in_cart': is_in_cart, 'user_review':user_reviews, 'form':form, 'user_review_counts':user_review_counts}
     return render(request, 'book/book_detail.html', context)
 
 def bookdelete(request, pk):
