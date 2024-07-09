@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Job
+from .models import Job, SavedJobs
 from .forms import JobForm
+from django.http import JsonResponse
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 def job_list(request):
     jobs = Job.objects.all()
@@ -24,7 +27,8 @@ def create_job(request):
 
 def job_detail(request, pk):
     job = get_object_or_404(Job, id = pk)
-    context= {'job':job}
+    is_saved = SavedJobs.objects.filter(user=request.user, job=job).exists() if request.user.is_authenticated else False
+    context= {'job':job, 'is_saved':is_saved}
     return render(request, 'job/job_detail.html', context)
 
 @login_required
@@ -42,7 +46,7 @@ def job_update(request, pk):
     context= {'form':form}
     return render(request, 'job/update_job.html', context)
 
-
+@login_required
 def job_delete(request, pk):
     job = get_object_or_404(Job, id = pk)
     if job.uploader == request.user:
@@ -53,3 +57,27 @@ def job_delete(request, pk):
         print('You are not allowed')
     context = {'job':job}
     return render(request, "job/job_delete.html", context)
+
+
+@login_required
+def toggle_save_job(request, pk):
+    job = get_object_or_404(Job, pk = pk)
+    saved_job, created = SavedJobs.objects.get_or_create(user = request.user, job = job)
+    if not created:
+        saved_job.delete()
+        is_saved=False
+        message = 'Job removed from your saved list.'
+    else:
+        is_saved = True
+        message = 'Job adder to your saved list.'
+    messages.success(request, message)
+    return JsonResponse({'is_saved':is_saved, 'message':message})
+
+@login_required
+def saved_jobs(request):
+    saved = SavedJobs.objects.filter(user = request.user).select_related('job')
+    paginator = Paginator(saved, 10)  # Show 10 podcasts per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'job/saved.html', {'page_obj': page_obj}) 
+   

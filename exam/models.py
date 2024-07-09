@@ -33,7 +33,7 @@ class Choice(models.Model):
 
 
 class TestAttempt(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE) 
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     score = models.FloatField(default=0)
@@ -44,7 +44,7 @@ class TestAttempt(models.Model):
 
     def calculate_score(self):
         total_questions = self.test.question_set.count()
-        correct_answers = self.useranswer_set.filter(is_correct=True).count()
+        correct_answers = self.useranswer_set.filter(is_correct=True).count() 
         self.score = (correct_answers / total_questions) * 100
         self.save()
 

@@ -32,7 +32,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 1rem;
+        margin-bottom: 1rem; 
     }
     .section-title {
         font-size: 1.2rem;
@@ -95,7 +95,7 @@
                 <span class="section-title">Podcasts</span>
                 <span class="section-count">{{ saved_podcasts|length }}</span>
             </div>
-            <div class="search-results card">
+            <div class="search-results card"> 
                 <div class="card-body">
                     {% if saved_podcasts %}
                         {% for podcast in saved_podcasts %}
@@ -122,7 +122,7 @@
                     {% if saved_jobs %}
                         {% for job in saved_jobs %}
                             <div class="result-item">
-                                <a href="{% url 'job-detail' job.id %}">{{ job.title }}</a>
+                                <a href="{% url 'job-detail' job.job.id %}">{{ job.job.title }}</a>
                             </div>
                         {% endfor %}
                     {% else %}
@@ -160,7 +160,7 @@
                     {% if saved_tests %}
                         {% for test in saved_tests %}
                             <div class="result-item">
-                                <a href="{% url 'test-detail' test.id %}">{{ test.title }}</a>
+                                <a href="{% url 'test_results' test.test.id test.id %}">{{ test.test.title }}</a>
                             </div>
                         {% endfor %}
                     {% else %}

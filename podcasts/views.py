@@ -35,9 +35,10 @@ def toggle_save_podcast(request, pk):
 
 @login_required
 def saved_podcasts(request):
-    saved = SavedPodcast.objects.filter(user=request.user).select_related('podcast')
+    saved = SavedPodcast.objects.filter(user=request.user).select_related('podcast').order_by('date_saved')
     
-    paginator = Paginator(saved, 10)  # Show 10 podcasts per page
+    paginator = Paginator(saved, 10)
+      # Show 10 podcasts per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'podcasts/saved.html', {'page_obj': page_obj}) 

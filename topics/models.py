@@ -26,7 +26,7 @@ class Topic(models.Model):
     
     def upvotes(self):
         # This property will return the count of upvotes for this particular topic instance
-        return Upvoter.objects.filter(topic=self, vote_type=1).count()
+        return Upvoter.objects.filter(topic=self, vote_type=1).count() 
 
     def save(self, *args, **kwargs):
         # Call the original save method

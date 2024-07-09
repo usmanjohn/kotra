@@ -6,6 +6,13 @@
     <div class="card">
         <div class="card-body">
             <div class="row">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    {% if user.is_authenticated %}
+                    <button id="saveButton" onclick="toggleSave({{ job.pk }})" class="btn btn-outline-primary">
+                        {% if is_saved %}Unsave{% else %}Save{% endif %}
+                    </button>
+                    {% endif %}
+                </div>
                 <div class="col-md-4 text-center">
                     <img src="{{ job.images.url }}" alt="{{ job.title }}" class="img-fluid rounded mb-3" style="max-height: 200px;">
                     <h5 class="card-title">{{ job.title }}</h5>
@@ -57,4 +64,64 @@
         </div>
     </div>
 </div>
+
+<script>
+    function toggleSave(jobId) {
+        fetch(`/jobs/toggle-save/${jobId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            var button = document.getElementById('saveButton');
+            button.textContent = data.is_saved ? 'Unsave' : 'Save';
+            // Optional: Show a temporary message
+            showMessage(data.message);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            showMessage('An error occurred while saving/unsaving the job.');
+        });
+    }
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function showMessage(message) {
+        // Create a temporary message element
+        var messageElement = document.createElement('div');
+        messageElement.textContent = message;
+        messageElement.style.position = 'fixed';
+        messageElement.style.top = '20px';
+        messageElement.style.left = '50%';
+        messageElement.style.transform = 'translateX(-50%)';
+        messageElement.style.padding = '10px';
+        messageElement.style.backgroundColor = 'rgba(0,0,0,0.7)';
+        messageElement.style.color = 'white';
+        messageElement.style.borderRadius = '5px';
+        messageElement.style.zIndex = '1000';
+
+        // Add the message to the body
+        document.body.appendChild(messageElement);
+
+        // Remove the message after 2 seconds
+        setTimeout(() => {
+            document.body.removeChild(messageElement);
+        }, 2000);
+    }
+</script>
 {% endblock content %}

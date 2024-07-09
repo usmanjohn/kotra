@@ -127,7 +127,7 @@
                     {% if tutorial_results %}
                         {% for tutorial in tutorial_results %}
                             <div class="result-item">
-                                <a href="#">{{ tutorial.title }}</a>
+                                <a href="{% url 'tutor-detail' tutorial.id %}">{{ tutorial.title }}</a>
                             </div>
                         {% endfor %}
                     {% else %}
@@ -149,7 +149,7 @@
                     {% if podcast_results %}
                         {% for podcast in podcast_results %}
                             <div class="result-item">
-                                <a href="#">{{ podcast.title }}</a>
+                                <a href="{% url 'podcast-detail' podcast.pk %}">{{ podcast.title }}</a>
                             </div>
                         {% endfor %}
                     {% else %}

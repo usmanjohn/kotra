@@ -23,11 +23,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('topics.urls')),
     path('users/', include('users.urls')),
-    path('book/', include('book.urls')),
+    path('books/', include('book.urls')),
     path('podcasts/', include('podcasts.urls')),
-    path('tutoring/', include('tutor.urls')),
+    path('tutorings/', include('tutor.urls')),
     path('jobs/', include('job.urls')),
-    path('exam/', include('exam.urls')),
+    path('exams/', include('exam.urls')),
     
     path("ckeditor5/", include('django_ckeditor_5.urls')),
 

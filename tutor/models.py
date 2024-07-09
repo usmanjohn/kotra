@@ -36,7 +36,7 @@ class SavedTutorial(models.Model):
         unique_together = ('user', 'tutorial')
 
     def __str__(self) -> str:
-        return self.topic.title  # Assuming 'title' is a field in the Topic model
+        return self.topic.title  # Assuming 'title' is a field in the Topic model 
 
 
     def __str__(self) -> str:

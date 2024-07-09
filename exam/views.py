@@ -161,7 +161,7 @@ def test_results(request, test_id, attempt_id):
             is_user_right = False
         
         if is_user_right:
-            correct_answers += 1
+            correct_answers += 1 
 
         results.append({
             'question': question,

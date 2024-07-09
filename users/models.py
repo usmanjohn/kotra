@@ -11,7 +11,7 @@ from django.contrib.auth.models import AbstractUser
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userprofile')
     is_email_verified = models.BooleanField(default=False)
-    image = models.ImageField(upload_to='profile_pics', default='profile_pics/default.png')
+    image = models.ImageField(upload_to='profile_pics', default='profile_pics/default.jpg')
     bio = models.CharField(max_length=300, default='I did not write a bio yet')
     instagram_url = models.URLField(blank=True, null=True, default='https://instagram.com/')
     facebook_url = models.URLField(blank=True, null=True, default='https://facebook.com/')
@@ -30,7 +30,7 @@ class UserProfile(models.Model):
             topic_author=self.user
         ).annotate(
             upvotes_count=Count('question', filter=Q(question__vote_type=1))
-        ).aggregate(total_upvotes=models.Sum('upvotes_count'))['total_upvotes'] or 0
+        ).aggregate(total_upvotes=models.Sum('upvotes_count'))['total_upvotes'] or 0 
 
         answers_upvotes = Answer.objects.filter(
             answer_author=self.user

@@ -79,5 +79,5 @@ class BookRating(models.Model):
     def __str__(self) -> str:
         return self.book.title
     def get_rating(self): 
-        return self.rating
+        return self.rating 
    

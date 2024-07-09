@@ -5,12 +5,12 @@ from django.views.generic import ListView, DeleteView,DetailView,UpdateView, Cre
 from django.contrib import messages
 from django.http import JsonResponse
 from taggit.models import Tag
-from exam.models import Test
+from exam.models import Test, TestAttempt
 from tutor.models import Tutoring,SavedTutorial
 from podcasts.models import Podcast, SavedPodcast
 from users.models import UserProfile, User
 from book.models import Book, BookCart, BookCartItem
-from job.models import Job
+from job.models import Job, SavedJobs
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from rest_framework import generics
@@ -30,14 +30,27 @@ def saved_all(request):
         cart_items = BookCartItem.objects.filter(cart=cart)
     else:
         cart_items = None
-    saved_podcasts = SavedPodcast.objects.filter(user=request.user).select_related('podcast')
-    
+    try:
+        saved_podcasts = SavedPodcast.objects.filter(user=request.user).select_related('podcast')
+    except:
+        saved_podcasts = None
+        
     try:
         tutorials = SavedTutorial.objects.filter(user = request.user).select_related('tutorial')
     except:
         tutorials = None
+        
+    try:
+        jobs = SavedJobs.objects.filter(user = request.user).select_related('job')
+    except:
+        jobs = None
+    try:
+        tests = TestAttempt.objects.filter(user = request.user).select_related('test')
+    except:
+        tests = None
 
-    context = {'saved_topics':saved_topics, 'saved_books':cart_items, 'saved_podcasts':saved_podcasts, 'saved_tutorials':tutorials}
+    context = {'saved_topics':saved_topics,'saved_tests':tests, 'saved_books':cart_items,
+                'saved_podcasts':saved_podcasts, 'saved_tutorials':tutorials, 'saved_jobs':jobs}
     return render(request, 'topics/saved_items.html', context)
 
 
@@ -51,7 +64,7 @@ def search_results(request):
         podcast_results = Podcast.objects.filter(Q(title__icontains=query) | Q(description__icontains=query)).distinct()
         
         test_results = Test.objects.filter(Q(title__icontains=query) | Q(description__icontains=query)| Q(question__question_text__icontains=query)).distinct()
-        job_results = Job.objects.filter(Q(title__icontains=query) | Q(description__icontains=query)).distinct()
+        job_results = Job.objects.filter(Q(title__icontains=query) | Q(description__icontains=query)| Q(qualifications__icontains=query)|Q(hiring_company__icontains=query)).distinct()
         user_results = UserProfile.objects.filter(Q(user__username__icontains=query) | Q(bio__icontains=query)).distinct()
     else:
         topic_results = Podcast.results = user_results = tutorial_results = test_results = job_results = book_results = []

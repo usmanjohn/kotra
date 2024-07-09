@@ -3,6 +3,10 @@ from pathlib import Path
 import django_heroku
 import dj_database_url
 import environ
+from storages.backends.s3boto3 import S3Boto3Storage
+
+from kotrain.storage_backends import StaticStorage, MediaStorage
+
 
 # Initialize environment variables
 env = environ.Env()
@@ -32,6 +36,8 @@ INSTALLED_APPS = [
     'tutor',
     'job',
     'exam',
+
+    'storages',
     'crispy_forms',
     'crispy_bootstrap4',
     'taggit',
@@ -76,6 +82,8 @@ WSGI_APPLICATION = 'kotrain.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(conn_max_age=0, ssl_require=False)
 }
+DATABASES['default'] = DATABASES['default']
+
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -89,13 +97,31 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Ensure emails are sent from your actual 
 SERVER_EMAIL = EMAIL_HOST_USER 
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN')
+AWS_LOCATION = env('AWS_LOCATION')
+
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
+STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+
+
+
+STATICFILES_STORAGE = 'kotrain.storage_backends.StaticStorage'
+DEFAULT_FILE_STORAGE = 'kotrain.storage_backends.MediaStorage'
+
+#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+
+
 
 # Activate Django-Heroku without database settings
-django_heroku.settings(locals(), databases=False)
+django_heroku.settings(locals(), databases=False, staticfiles=False)
 
 # Date input formats
 DATE_INPUT_FORMATS = ['%d/%m/%Y']
@@ -174,11 +200,12 @@ USE_I18N = True
 USE_TZ = True
 
 # Debugging prints
-print("EMAIL_HOST:", env('EMAIL_HOST'))
-print("EMAIL_PORT:", env('EMAIL_PORT'))
-print("EMAIL_USE_TLS:", env('EMAIL_USE_TLS'))
-print("EMAIL_HOST_USER:", env('EMAIL_HOST_USER'))
-print("EMAIL_HOST_PASSWORD:", env('EMAIL_HOST_PASSWORD'))
-print("DATABASE_URL:", env('DATABASE_URL'))
-print("SECRET_KEY:", env('SECRET_KEY'))
-print("DEBUG:", env('DEBUG'))
+#print("EMAIL_HOST:", env('EMAIL_HOST'))
+#print("EMAIL_PORT:", env('EMAIL_PORT'))
+#print("EMAIL_USE_TLS:", env('EMAIL_USE_TLS'))
+#print("EMAIL_HOST_USER:", env('EMAIL_HOST_USER'))
+#print("EMAIL_HOST_PASSWORD:", env('EMAIL_HOST_PASSWORD'))
+#print("DATABASE_URL:", env('DATABASE_URL'))
+#print("SECRET_KEY:", env('SECRET_KEY'))
+#print("DEBUG:", env('DEBUG'))
+# 

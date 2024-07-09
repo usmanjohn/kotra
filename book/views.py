@@ -3,11 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from .models import Book, BookCartItem, BookCategory, BookCart, BookOrder, BookRating
 from django.views.generic import ListView, DeleteView, DetailView, UpdateView
 from .forms import BookForm, ReviewForm
-
 from django.contrib import messages
-
-            
-            
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.db.models import Q
