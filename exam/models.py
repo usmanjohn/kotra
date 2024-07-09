@@ -8,11 +8,7 @@ class Test(models.Model):
     def __str__(self):
         return self.title
 
-class QuestionGroup(models.Model):
-    title = models.TextField()
-    
-    def __str__(self) -> str:
-        return self.title
+
     
 class Question(models.Model):
     QUESTION_TYPES = (
@@ -20,7 +16,6 @@ class Question(models.Model):
         ('WA', 'Written Answer'),
     )
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
-    group = models.ForeignKey(QuestionGroup, on_delete=models.CASCADE, null=True, blank=True)
     question_text=CKEditor5Field('Question', config_name='extends')
 
     
