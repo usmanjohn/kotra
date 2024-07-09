@@ -15,7 +15,7 @@ class Job(models.Model):
     salary = models.IntegerField(blank=True, null=True)
     date_posted = models.DateField(auto_now_add=True)
     deadline = models.DateField(blank=True, null=True)
-    company_links = models.URLField(blank=True, null=True)
+    company_links = models.URLField(blank=True, null=True) 
 
     def __str__(self):
         return self.title

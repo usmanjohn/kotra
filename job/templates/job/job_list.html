@@ -56,13 +56,13 @@
 }
 </style>
 <div class="container mt-4">
-    <a href="{% url 'jobs-saved' %}" class="btn btn-light mb-3">Saved Podcasts</a>
+    <a href="{% url 'jobs-saved' %}" class="btn btn-light mb-3">Saved Jobs</a>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         
     
         {% for job in jobs %}
         <div class="col">
-            <div class="card h-100 d-flex flex-column">
+            <div class="card h-100 d-flex flex-column"> 
                 <div class="row g-0 flex-grow-1">
                     <div class="col-4 col-md-3">
                         <img src="{{ job.images.url }}" class="img-fluid rounded-start" alt="{{ job.title }}">
