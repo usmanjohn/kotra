@@ -26,7 +26,7 @@ class Book(models.Model):
         YEAR_CHOICES.append((r,r))
 
     
-    title = models.CharField(max_length=40)
+    title = models.CharField(max_length=70)
     uploader = models.ForeignKey(User, related_name='books_uploaded',on_delete=models.CASCADE)
     description = models.TextField()
     num_of_pages = models.IntegerField()
